@@ -1,0 +1,205 @@
+phenix.refine summary
+
+Directory: /home/noguhiro2007/project/lysozyme/phenix/Refine_10
+Version: 1.20.1-4487
+Parameter file: /home/noguhiro2007/project/lysozyme/phenix/Refine_10/lysozyme_refine_10.eff
+
+
+                    start         final
+  ---------------------------------------
+  R-work:           0.1518        0.1473
+  R-free:           0.1710        0.1702
+  RMS(angles):      0.87           1.23
+  RMS(bonds):       0.005          0.012
+
+
+REFERENCE:
+
+Afonine PV, Grosse-Kunstleve RW, Echols N, Headd JJ, Moriarty NW, Mustyakimov
+M, Terwilliger TC, Urzhumtsev A, Zwart PH, Adams PD. (2012) Towards automated
+crystallographic structure refinement with phenix.refine. Acta Crystallogr D
+Biol Crystallogr 68:352-67.
+
+
+============================== Experimental data ==============================
+
+  Resolution range           =  24.836 - 1.300 (1.346 - 1.300)
+  Number of reflections      =    28330 (2622)
+     after outlier rejection =    28330 (2622)
+  Completeness               =  96.80% (91.49%)
+  R-work                     =   0.1473 (0.1240)
+  R-free                     =   0.1702 (0.1617)
+  By resolution bin:
+   BIN  RESOLUTION RANGE  COMPL.    NWORK NFREE   RWORK  RFREE  CCWORK CCFREE
+     1   24.84 -    2.80    0.99     2977   145  0.1739 0.1769   0.932  0.913
+     2    2.80 -    2.22    0.99     2785   148  0.1613 0.1684   0.932  0.921
+     3    2.22 -    1.94    0.98     2758   138  0.1351 0.1696   0.955  0.913
+     4    1.94 -    1.76    0.98     2694   162  0.1313 0.1686   0.959  0.922
+     5    1.76 -    1.64    0.97     2689   127  0.1254 0.1731   0.961  0.932
+     6    1.64 -    1.54    0.97     2664   136  0.1168 0.1735   0.966  0.924
+     7    1.54 -    1.46    0.96     2626   147  0.1138 0.1545   0.967  0.941
+     8    1.46 -    1.40    0.96     2628   146  0.1064 0.1777   0.972  0.928
+     9    1.40 -    1.35    0.95     2615   123  0.1128 0.1356   0.972  0.951
+    10    1.35 -    1.30    0.91     2469   153  0.1240 0.1617   0.973  0.951
+
+              ----------Residues with poor real-space CC----------             
+
+  atom                   b_iso   occ  2Fo-Fc  Fmodel     CC
+  23 residues (including water) with CC(Fc,2mFo-DFc) < 0.8
+
+                 ----------Suspicious water molecules----------                
+
+  Waters in poor density:
+  atom                   b_iso   occ  2Fo-Fc   Fo-Fc    Anom     CC
+   S  95    O            31.12  1.00    1.34   -2.37     ---  0.776
+   S 109    O            30.81  1.00    1.59   -0.88     ---  0.761
+   S 116    O            33.57  1.00    1.48   -0.56     ---  0.776
+   S 145    O            35.37  1.00    1.61    0.07     ---  0.767
+   S 147    O            42.12  1.00    1.39    0.52     ---  0.782
+   S 152    O            41.38  1.00    1.08   -0.25     ---  0.756
+   S 155    O            37.36  1.00    1.24   -0.83     ---  0.782
+   S 156    O            37.83  1.00    1.11   -0.94     ---  0.714
+   S 160    O            36.91  1.00    1.28   -0.97     ---  0.766
+   S 162    O            38.27  1.00    1.34   -0.19     ---  0.789
+   S 163    O            28.45  1.00    2.02   -0.43     ---  0.684
+   S 174    O            35.46  1.00    1.49   -0.52     ---  0.778
+   S 178    O            35.52  1.00    1.42   -0.66     ---  0.781
+   S 179    O            41.73  1.00    1.25    0.07     ---  0.782
+   S 184    O            46.47  1.00    1.33    1.29     ---  0.753
+   S 185    O            45.34  1.00    0.99    0.23     ---  0.725
+   S 187    O            43.45  1.00    1.22    0.49     ---  0.769
+   S 189    O            45.63  1.00    0.95    0.27     ---  0.860
+   S 193    O            40.37  1.00    1.48    0.53     ---  0.780
+   S 197    O            44.15  1.00    1.10    0.28     ---  0.758
+   S 198    O            42.47  1.00    1.48    0.93     ---  0.747
+   S 199    O            48.70  1.00    1.16    0.78     ---  0.760
+   S 202    O            45.35  1.00    1.15    0.42     ---  0.722
+   S 204    O            46.16  1.00    1.06    0.23     ---  0.759
+
+  Possibly mislabeled atoms:
+  atom                   b_iso   occ  2Fo-Fc   Fo-Fc    Anom     CC
+   S   1    O             6.25  1.00   11.49    6.69     ---  0.985
+   S   2    O             7.05  1.00   10.40    6.05     ---  0.983
+   S   4    O             9.31  1.00    9.00    4.93     ---  0.977
+
+  Poorly ordered waters:    24
+  Mislabeled waters:         3
+
+=============================== Model properties ==============================
+
+   Number of:
+     all atoms      : 1198
+     H or D atoms   : 0
+     chains         : 2
+     a.a. residues  : 129
+     nucleotides    : 0
+     water          : 179
+     other (ligands): 0
+   Ligands: None
+
+============================= Geometry restraints =============================
+
+
+                        ----------Bond lengths----------                       
+
+  All restrained atoms within 4.0 sigma of ideal values.
+
+  Min. delta:    0.000 (Z=  0.001)
+  Max. delta:    0.073 (Z=  6.349)
+  Mean delta:    0.012 (Z=  0.803)
+
+                        ----------Bond angles----------                        
+
+  atoms                   ideal    model    delta   sigma  residual   deviation
+   A  12  MET  N      
+   A  12  MET  CA     
+   A  12  MET  CB        110.12   118.22    -8.10  1.47e+00  3.04e+01   5.5*sigma
+
+  Min. delta:    0.001 (Z=  0.000)
+  Max. delta:    8.103 (Z=  5.512)
+  Mean delta:    1.242 (Z=  0.724)
+
+                      ----------Dihedral angles----------                      
+
+  atoms                   ideal    model    delta   sigma  residual   deviation
+   A   3  PHE  CA     
+   A   3  PHE  C      
+   A   4  GLY  N      
+   A   4  GLY  CA        180.00   159.72    20.28  5.00e+00  1.65e+01   4.1*sigma
+   A  62  TRP  CA     
+   A  62  TRP  C      
+   A  63  TRP  N      
+   A  63  TRP  CA        180.00  -154.06   -25.94  5.00e+00  2.69e+01   5.2*sigma
+
+  Min. delta:    0.020
+  Max. delta:   83.168
+  Mean delta:   13.207
+
+                       ----------Chiral volumes----------                      
+
+  All restrained atoms within 4.0 sigma of ideal values.
+
+  Min. delta:    0.001
+  Max. delta:    0.321
+  Mean delta:    0.105
+
+                       ----------Planar groups----------                       
+
+  All restrained atoms within 4.0 sigma of ideal values.
+
+  Min. delta:    0.000
+  Max. delta:    0.093
+  Mean delta:    0.016
+
+============================ Molprobity validation ============================
+
+
+  Geometry Restraints Library: GeoStd + Monomer Library + CDL v1.2
+  Deviations from Ideal Values - rmsd. rmsZ for bonds and angles.
+    Bond      :  0.012   0.073   1041  Z= 0.803
+    Angle     :  1.242   8.103   1410  Z= 0.724
+    Chirality :  0.105   0.321    146
+    Planarity :  0.016   0.093    186
+    Dihedral  : 13.207  83.168    375
+    Min Nonbonded Distance : 1.914
+  
+  Molprobity Statistics.
+    All-atom Clashscore : 9.50
+    Ramachandran Plot:
+      Outliers :  0.00 %
+      Allowed  :  1.57 %
+      Favored  : 98.43 %
+    Rotamer Outliers :  0.93 %
+    Cbeta Deviations :  0.00 %
+    Peptide Plane:
+      Cis-proline     : 0.00 %
+      Cis-general     : 0.00 %
+      Twisted Proline : 0.00 %
+      Twisted General : 0.00 %
+  
+  Rama-Z (Ramachandran plot Z-score):
+  Interpretation: bad |Rama-Z| > 3; suspicious 2 < |Rama-Z| < 3; good |Rama-Z| < 2.
+  Scores for whole/helix/sheet/loop are scaled independently;
+  therefore, the values are not related in a simple manner.
+    whole:  0.16 (0.74), residues: 133
+    helix: -1.21 (0.65), residues: 51
+    sheet: -0.48 (1.04), residues: 13
+    loop :  1.64 (0.83), residues: 69
+
+                     ----------Asn/Gln/His flips----------                     
+
+   A  59  ASN
+
+=================================== Summary ===================================
+
+  Ramachandran outliers =   0.00 %
+                favored =  98.43 %
+  Rotamer outliers      =   0.93 %
+  C-beta deviations     =     0
+  Clashscore            =   9.50
+  RMS(bonds)            =   0.0122
+  RMS(angles)           =   1.24
+  MolProbity score      =   1.50
+  Resolution            =   1.30
+  R-work                =   0.1473
+  R-free                =   0.1702

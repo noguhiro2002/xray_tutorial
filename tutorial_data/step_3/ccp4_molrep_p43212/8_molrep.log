@@ -1,0 +1,331 @@
+#CCP4I VERSION CCP4Interface 8.0.007
+#CCP4I SCRIPT LOG molrep
+#CCP4I DATE 31 Dec 2022  01:44:57
+#CCP4I USER noguhiro2007
+#CCP4I PROJECT Lysozyme
+#CCP4I JOB_ID 8
+#CCP4I SCRATCH /tmp/noguhiro2007
+#CCP4I HOSTNAME xray
+#CCP4I PID 8407
+
+    +-----------------------------------------+
+    |                                         |
+    |             --- MOLREP ---              |
+    |       /Vers 11.9.02; 28.02.2022/        |
+    |                                         |
+    +-----------------------------------------+
+
+ +------------------------------------------------------------+
+ |                                                            |
+ | You can use program by command string with options:        |
+ |                                                            |
+ |  molrep -f [file_sf_or_map] -m [model_crd_or_map]          |
+ |         -mx [fixed model]   -m2 [model_2]                  |
+ |         -po [path_out]      -ps [path_scratch]             |
+ |         -nmon [<auto>]      -sim [<0.35>]                  |
+ |         -pst [n/y/<d>]      -nmr [0,1,<5>,4,11]            |
+ |         -prf [<n>/y/s]      -surf [<y>/a/2]  -np [Npeak]   |
+ |         -dom [<n>/y/m,g,h]   -nref [5]                     |
+ |         -s [file_sequence]  -s2 [file_seq_for_m2]          |
+ |         -k [file_keywords]  -doc [y/a/n]                   |
+ |         -h     -i     -r                                   |
+ |                                                            |
+ |         -h = only keyword and mtz label information, clean |
+ |         -i = interactive mode                              |
+ |         -r = rest some special files                       |
+ |          nmr = 11 means to use only first model in ensemble|
+ |          file_keywords = simple text file with keywords    |
+ |                          (one line - one keyword)          |
+ |                                                            |
+ |  use  "molrep -h" to get short manual                      |
+ |                                                            |
+ +------------------------------------------------------------+
+
+  Input files:
+
+ -po: /tmp/noguhiro2007/Lysozyme_8_molrep_
+ -ps: /tmp/noguhiro2007/Lysozyme_8_molrep_
+
+
+ # ---  type "keyword   parameters" and/or  ---
+ # ---  press key "CR" to run program       ---
+
+
+ +===== Input keywords ============================+
+ |   _LABIN  F=F_XDSdataset SIGF=SIGF_XDSdataset   |
+ |   _FILE_F  /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A.mtz
+ |   _FILE_M  /home/noguhiro2007/project/lysozyme/af2/lysozyme_ce6c6_unrelaxed_rank_5_model_1.pdb
+ +=================================================+
+
+
+ OPENED INPUT MTZ FILE 
+ Logical Name: /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A.mtz   Filename: /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A.mtz 
+
+  -----------------------------------
+ --- MTZ file :/home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212
+
+   No  Label                       type
+
+     1  H                               H
+     2  K                               H
+     3  L                               H
+     4  FreeR_flag                      I
+     5  F_XDSdataset                    F
+     6  SIGF_XDSdataset                 Q
+     7  DANO_XDSdataset                 D
+     8  SIGDANO_XDSdataset              Q
+     9  F_XDSdataset(+)                 G
+    10  SIGF_XDSdataset(+)              L
+    11  F_XDSdataset(-)                 G
+    12  SIGF_XDSdataset(-)              L
+    13  ISYM_XDSdataset                 Y
+    14  IMEAN_XDSdataset                J
+    15  SIGIMEAN_XDSdataset             Q
+    16  I_XDSdataset(+)                 K
+    17  SIGI_XDSdataset(+)              M
+    18  I_XDSdataset(-)                 K
+    19  SIGI_XDSdataset(-)              M
+  -----------------------------------
+ Data line--- LABIN F=F_XDSdataset SIGF=SIGF_XDSdataset
+
+ OPENED INPUT MTZ FILE 
+ Logical Name: /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A.mtz   Filename: /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A.mtz 
+
+Number of reflections :    28339
+
+  Time:     1h 44m 57s
+
+ Full doc. in: /tmp/noguhiro2007/Lysozyme_8_molrep_molrep.doc
+ Script file : /tmp/noguhiro2007/Lysozyme_8_molrep_molrep.btc
+
+ keyword LAP: S will be used
+ Input MODEL_file :ect/lysozyme/af2/lysozyme_ce6c6_unrelaxed_rank_5_model_1.pdb
+ Input SF_file    :/tmp/noguhiro2007/Lysozyme_8_molrep_molrep_mtz.cif
+  INFO: card "CRYST1" is missing in PDB_file
+        default space group "P 1"
+        Default CELL: 100,100,100,90,90,90
+ SYMINFO file set to /opt/xtal/ccp4-8.0/lib/data/syminfo.lib 
+ SYMINFO file set to /opt/xtal/ccp4-8.0/lib/data/syminfo.lib 
+ SYMINFO file set to /opt/xtal/ccp4-8.0/lib/data/syminfo.lib 
+ SYMINFO file set to /opt/xtal/ccp4-8.0/lib/data/syminfo.lib 
+ SYMINFO file set to /opt/xtal/ccp4-8.0/lib/data/syminfo.lib 
+
+  -- Model  --
+
+ INFO: model was corrected (keyword SURF="Y")
+       model was shifted to the origin of coordinate system
+       shift vector   :    0.53   -0.34    0.04
+            /fract/   :   0.007  -0.004   0.001
+      Number of atoms:    1000
+      Natom_inside   :     479
+ INFO: expected number of models :    1
+ INFO: V_model:   74.4% (of asymm. part of u.c.)
+
+  -- Structure Factors --
+ -------------
+  Fobs: resolution     :     35.12      1.30
+  Completeness of Fobs :     0.973
+  B_overall of Fobs    :    18.595
+  Optical resolution   :     1.191
+  Boff for Opt. res.   :   650.405
+  Resmax (from Opt.res):      1.52
+  Anisotropic distribution of Structure Factors:
+  Ratio of Eigen values :  0.9839  0.9830  1.0000
+ INFO:  Anisotropicy will not be used
+ -------------
+  Resolution will be used :     35.12      1.52
+               (according optical resolution)
+ -------------
+
+   -- Filters --
+ -------------
+  RESMIN ~ Rad_model
+  Rad_model,Boff    :    17.221   650.405
+ Similarity of model : SIM --> BADD
+  Sim,Badd          :    0.350    1.227
+   BADD + Boverall = 2*RES_BADD^2
+ Filters off,add (A)        :    18.03     3.15 (RESMIN, RES_BADD)
+  INFO: Filter off = Highpass filter (corresponds to keyword: RESMIN)
+  INFO: Filter add = Lowpass filter (connected with keywords: SIM, BADD)
+ -------------
+
+  Space group : P 43 21 2
+  No:  96 Sett:   1
+  Cell:  78.538  78.538  37.285   90.00   90.00   90.00
+
+  --- Rotation function ---
+
+  Nchain (for nmr in model 1):    1
+  Radius of gyration      :   13.86
+  WARNING: Radius of integration  >    18.64
+  Radius of integration   :   18.64
+  Resolution              :   35.12    1.52
+ --- rfcoef for model ---
+ --- rfcoef for Fobs ---
+  NCS (from Self rotation Function):   2 ("-")
+  NCS_model  :     1
+
+     --- Peaks of Rotation Function ---
+ +------------------------------------------+
+ |         theta    phi      chi   Rf/sigma |
+ +------------------------------------------+
+ |    1   152.35  169.57   51.39       9.09 |
+ |    2   152.35  166.30   51.22       8.92 |
+ |    3    37.57   97.72  143.39       3.63 |
+ |    4    59.43   75.43   90.51       3.62 |
+ |    5   158.59 -160.08   53.24       3.58 |
+ |    6   135.24 -137.75  143.92       3.58 |
+ |    7    56.73  139.10  108.75       3.40 |
+ |    8    29.56   75.03  166.54       3.37 |
+ |    9    22.36   59.31  109.09       3.32 |
+ |   10    29.75   76.27  165.94       3.28 |
+ |   11   155.90  172.91  123.12       3.18 |
+ |   12   155.50  174.26  123.44       3.17 |
+ |   13    99.33  118.64   86.99       3.14 |
+ |   14   155.22  175.74  124.00       3.13 |
+ |   15    36.42   75.09   86.86       3.05 |
+ |   16   148.30 -170.41  119.57       3.05 |
+ |   17    44.87  100.50  136.59       3.00 |
+ |   18   139.89 -126.34  149.85       2.98 |
+ |   19   138.86  178.80   83.11       2.98 |
+ |   20   144.82 -176.33   67.99       2.97 |
+ |   21   135.31 -132.30  152.19       2.96 |
+ |   22   108.52  124.26   85.61       2.93 |
+ |   23    46.09   64.17  143.95       2.90 |
+ |   24   108.39  125.50   85.71       2.90 |
+ |   25    82.95  127.10   78.62       2.85 |
+ |   26   160.62  151.31   90.01       2.84 |
+ |   27   161.27  149.60   89.88       2.80 |
+ |   28    56.11  106.73  101.03       2.80 |
+ |   29   164.59  174.36  138.73       2.77 |
+ |   30    47.94  112.45  144.50       2.74 |
+ |   31   133.51 -127.91  154.35       2.71 |
+ |   32    97.21  164.79   76.84       2.71 |
+ |   33    75.59   90.03   40.16       2.70 |
+ |   34   132.81 -165.12  114.28       2.70 |
+ |   35   108.16  144.68   89.96       2.67 |
+ |   36   164.31  171.32  138.50       2.66 |
+ |   37     3.71   85.72  167.97       2.65 |
+ |   38   154.29  172.79  106.17       2.64 |
+ |   39     3.51   78.76  168.38       2.63 |
+ |   40     3.64   69.55  167.92       2.59 |
+ |   41   139.14  112.70   43.82       2.57 |
+ |   42    69.35  123.69   91.30       2.55 |
+ +------------------------------------------+
+
+ INFO:    Relations between peaks see in molrep.doc
+
+
+  ---RF peak similarity ---
+     +------------------------------------------------------------------------+
+   1 | 9 7 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+   2 | 7 9 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+   3 | . . 9 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+   4 | . . . 9 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+   5 | . . . . 9 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+   6 | . . . . . 9 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+   7 | . . . . . . 9 . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+   8 | . . . . . . . 9 . 7 . . . . . . . . . . . . . . . . . . . . . . . . . .|
+   9 | . . . . . . . . 9 . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+  10 | . . . . . . . 7 . 9 . . . . . . . . . . . . . . . . . . . . . . . . . .|
+  11 | . . . . . . . . . . 9 7 . 5 . . . . . . . . . . . . . . . . . . . . . .|
+  12 | . . . . . . . . . . 7 9 . 7 . . . . . . . . . . . . . . . . . . . . . .|
+  13 | . . . . . . . . . . . . 9 . . . . . . . . . . . . . . . . . . . . . . .|
+  14 | . . . . . . . . . . 5 7 . 9 . . . . . . . . . . . . . . . . . . . . . .|
+  15 | . . . . . . . . . . . . . . 9 . . . . . . . . . . . . . . . . . . . . .|
+  16 | . . . . . . . . . . . . . . . 9 . . . . . . . . . . . . . . . . . . . .|
+  17 | . . . . . . . . . . . . . . . . 9 . . . . . . . . . . . . . . . . . . .|
+  18 | . . . . . . . . . . . . . . . . . 9 . . . . . . . . . . . . . . . . . .|
+  19 | . . . . . . . . . . . . . . . . . . 9 . . . . . . . . . . . . . . . . .|
+  20 | . . . . . . . . . . . . . . . . . . . 9 . . . . . . . . . . . . . . . .|
+  21 | . . . . . . . . . . . . . . . . . . . . 9 . . . . . . . . . . . . . . .|
+  22 | . . . . . . . . . . . . . . . . . . . . . 9 . 7 . . . . . . . . . . . .|
+  23 | . . . . . . . . . . . . . . . . . . . . . . 9 . . . . . . . . . . . . .|
+  24 | . . . . . . . . . . . . . . . . . . . . . 7 . 9 . . . . . . . . . . . .|
+  25 | . . . . . . . . . . . . . . . . . . . . . . . . 9 . . . . . . . . . . .|
+  26 | . . . . . . . . . . . . . . . . . . . . . . . . . 9 7 . . . . . . . . .|
+  27 | . . . . . . . . . . . . . . . . . . . . . . . . . 7 9 . . . . . . . . .|
+  28 | . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 . . . . . . . .|
+  29 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 . . . . . . 6|
+  30 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 . . . . . .|
+  31 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 . . . . .|
+  32 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 . . . .|
+  33 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 . . .|
+  34 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 . .|
+  35 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 .|
+  36 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6 . . . . . . 9|
+  37 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+  38 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+  39 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+  40 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+  41 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+  42 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .|
+     +------------------------------------------------------------------------+
+
+  Time:     1h 45m  9s Elapsed:     0h  0m 12s
+
+  --- Translation function ---
+
+  Resolution              :   35.12    1.52
+  NCS model               :    1
+
+  Time_elapsed:     0h  0m 13s Remained:     0h  0m 41s
+
+    RF TF    TF/sig   TFcntrst  PFind  PF    PFmod  wRfac  Score Cntrst  (for)
+     1  1     17.58      4.201   1.00  1.00   1.00  0.526 0.6575   0.00 (0.6575)
+     2  1     16.97      3.905   1.00  1.00   1.00  0.541 0.6389   0.00 (0.6575)
+     3 14     1.028      0.885   1.00  1.00   1.00  0.656 0.4219   0.00 (0.6575)
+     4  8     1.711      2.095   1.00  1.00   1.00  0.659 0.4148   0.00 (0.6575)
+     5 10     1.939      1.781   1.00  1.00   1.00  0.657 0.4265   0.00 (0.6575)
+     6  2     2.244      2.898   1.00  1.00   1.00  0.657 0.4225   0.00 (0.6575)
+     7  9     1.594      0.991   1.00  1.00   1.00  0.657 0.4144  28.58 (0.6575)
+     8  1     1.327      1.324   1.00  0.96   1.00  0.659 0.3922  24.97 (0.6575)
+     9  3     1.781      1.662   1.00  1.00   1.00  0.661 0.4161  24.82 (0.6575)
+    10  2     1.180      1.067   1.00  0.99   1.00  0.657 0.4085  25.99 (0.6575)
+    11  8     1.108      1.265   1.00  1.00   1.00  0.659 0.4147  26.56 (0.6575)
+    12  2     1.635      0.853   1.00  1.00   1.00  0.663 0.4148  27.13 (0.6575)
+    13  9     1.632      1.603   1.00  1.00   1.00  0.657 0.4158  27.13 (0.6575)
+ INFO: Contrast and TF/sig are good enough. Stop this run
+
+                              --- Summary (V2) ---
+ +------------------------------------------------------------------------------+
+ |     RF  TF   theta    phi     chi    tx     ty     tz    TF/sg  Tcoef  Score |
+ +------------------------------------------------------------------------------+
+ |  1   1   1  152.35  169.57   51.39  0.742  0.010  0.000  17.58  1.000 0.65746|
+ |  2   2   1  152.35  166.30   51.22  0.242  0.510  0.000  16.97  1.000 0.63891|
+ |  3   6   2  135.24 -137.75  143.92  0.259  0.023  0.291   2.24  1.000 0.42245|
+ |  4  12   2  155.50  174.26  123.44  0.589  0.780  0.154   1.64  1.000 0.41475|
+ |  5   9   3   22.36   59.31  109.09  0.975  0.281  0.217   1.78  0.983 0.40921|
+ |  6  10   2   29.75   76.27  165.94  0.078  0.264  0.201   1.18  1.000 0.40846|
+ |  7   8   1   29.56   75.03  166.54  0.075  0.262  0.192   1.33  1.000 0.39225|
+ |  8   5  10  158.59 -160.08   53.24  0.758  0.005  0.452   1.94  0.900 0.38386|
+ |  9   3  14   37.57   97.72  143.39  0.090  0.302  0.332   1.03  0.900 0.37970|
+ | 10  13   9   99.33  118.64   86.99  0.735  0.969  0.242   1.63  0.900 0.37423|
+ | 11   4   8   59.43   75.43   90.51  0.803  0.392  0.049   1.71  0.900 0.37332|
+ | 12  11   8  155.90  172.91  123.12  0.080  0.282  0.081   1.11  0.900 0.37323|
+ | 13   7   9   56.73  139.10  108.75  0.226  0.460  0.435   1.59  0.900 0.37292|
+ +------------------------------------------------------------------------------+
+
+ corrF =   0.6899
+ TF/sig       =    17.58
+ Final CC     =   0.6899
+ Packing_Coef =   1.0000
+
+ After stick correction:
+  Move closer to origin
+  I_sym_operator    :    1
+  new position(frac):  -0.258   0.010   0.000
+
+
+  Nmon RF  TF   theta    phi     chi   tx     ty     tz     TF/sg  wRfac  Score
+    1   1   1  152.35  169.57   51.39 -0.258  0.010  0.000  17.58  0.503  0.690
+
+ --- convert "/tmp/noguhiro2007/Lysozyme_8_molrep_molrep.crd"
+          to "/tmp/noguhiro2007/Lysozyme_8_molrep_molrep.pdb"
+  Time:     1h 45m 17s  Elapsed:     0h  0m 20s
+
+#CCP4I TERMINATION STATUS 1 
+#CCP4I TERMINATION TIME 31 Dec 2022  01:45:17
+#CCP4I TERMINATION OUTPUT_FILES  Lysozyme_8_molrep.doc Lysozyme Lysozyme_8_molrep.xml Lysozyme Lysozyme_8_rf.molrep_rf Lysozyme
+#CCP4I MESSAGE Task completed successfully
+
