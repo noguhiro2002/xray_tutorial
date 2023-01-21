@@ -1,0 +1,2042 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<!-- Baubles info
+     Version 0.0.8
+     Java loggraph:
+          archive  = JLogGraph.jar
+          codebase = file:///opt/xtal/ccp4-8.0/bin
+          code     = JLogGraph.class
+-->
+<!-- Inline stylesheet -->
+<style type="text/css"><!-- /* Hide the stylesheet from older browsers */
+  body { font-family: Verdana, Arial, sans-serif;
+         font-size: 17px;
+         background-color: white; }
+  h1 { background-color: gray; }
+  h2 { background-color: lightgray; }
+  .logfile { background-color: #fffddc; }
+  .ccp4i   { font-weight: bold; }
+  .banner  { background-color: lightgray;
+             border-top-style: solid;
+             border-bottom-style: solid;
+             border-color: gray;
+             border-width: 2px; }
+  .summary  { font-weight: bold;
+              color: red;
+              font-size: 90%;
+              white-space: pre;
+              background-color: #ffffc6;
+              border-style: solid;
+              border-width: 1px;
+              border-color: orange; }
+  .non_summary { font-size: 80%; }
+  .result   { margin-left:5%; margin-right:5%; }
+  .references { font-size: 70%; }
+  .progname { font-size: 150%; font-weight: bold; }
+  .proginfo { font-size: 90%; font-style: italic; }
+  .progvers { font-size: 90%; font-style: italic; font-weight: bold; }
+  .progterm { font-size: 90%; font-style: italic; font-weight: bold; }
+  .doclink { font-size: 90%; position: absolute; right: 5%;}
+  .applet  { border-bottom: 1px solid gray; }
+  table,td,th { border-style: solid;
+                border-width: 2px;
+                border-spacing: 0;
+                border-color: gray;
+                padding: 1px;
+                font-size: 90%; }
+  td,th { padding-left: 8px; padding-right: 8px; }
+  .loggraph_tables      { border-style: none;
+                          background-color: #cfcdff; }
+  table.loggraph_tables { padding: 8px;
+                          background-color: white; }
+  .inner_control > a { font-size: 70%;
+                       background-color: white;
+                       position: relative; bottom: 0px; left: 80%; }
+-->
+</style>
+<!-- Javascript functions to hide/display folder content -->
+<script type="text/javascript">
+<!--  to hide script contents from old browsers
+
+// Pick loggraph
+// Hides all loggraphs and then shows just the one of
+// interest
+function pick_loggraph(name,i,nloggraphs)
+{
+    hide_all_loggraphs(name,nloggraphs);
+    show_loggraph(name,i);
+}
+
+// Function to display a loggraph associated with a log
+function show_loggraph(name,i)
+{
+    var loggraph_name = name + "_loggraph_" + i;
+    var loggraph_title = name + "_loggraph_title_" + i;
+    showElement(loggraph_name);
+    // Also make the title link bold
+    var obj = document.getElementById(loggraph_title);
+    obj.style.fontWeight = "bold";
+}
+
+// Function to hide a loggraph associated with a log
+function hide_loggraph(name,i)
+{
+    var loggraph_name = name + "_loggraph_" + i;
+    var loggraph_title = name + "_loggraph_title_" + i;
+    hideElement(loggraph_name);
+    // Also make the title link normal
+    var obj = document.getElementById(loggraph_title);
+    obj.style.fontWeight = "normal";
+}
+
+// Function to hide all loggraphs associated with a log
+function hide_all_loggraphs(name,n)
+{
+    // Loop over all graphs up to n and hide each one
+    for (var i=0; i<n; i++){
+      hide_loggraph(name,i);
+    }
+}
+
+// Function to open the complete log file from the
+// hidden state
+function open_full_logfile(name) {
+
+    // Show the entire logfile
+    var classname = name + "_logfile";
+    setDisplayByClass(classname,"block");
+    
+    // Show the controls for toggling between
+    // summary and complete views
+    classname = name + "_logfile_open_controls";
+    setDisplayByClass(classname,"block");
+    
+    // Hide the controls for accessing the logfile
+    // when it's hidden
+    classname = name + "_logfile_closed_controls";
+    setDisplayByClass(classname,"none");
+
+    // Show the full view
+    show_full_logfile(name);
+}
+
+// Function to open the log file summary from the
+// hidden state
+function open_summary_logfile(name) {
+
+    // Show the entire logfile
+    var classname = name + "_logfile";
+    setDisplayByClass(classname,"block");
+    
+    // Show the controls for toggling between
+    // summary and complete views
+    classname = name + "_logfile_open_controls";
+    setDisplayByClass(classname,"block");
+    
+    // Hide the controls for accessing the logfile
+    // when it's hidden
+    classname = name + "_logfile_closed_controls";
+    setDisplayByClass(classname,"none");
+
+    // Show the summary view
+    show_only_summary(name);
+}
+
+// Function to hide the complete log file
+function close_logfile(name)
+{
+    // Hide the entire logfile
+    var classname = name + "_logfile";
+    setDisplayByClass(classname,"none");
+    
+    // Hide the controls for toggling between
+    // summary and complete views
+    classname = name + "_logfile_open_controls";
+    setDisplayByClass(classname,"none");
+    
+    // Show the controls for accessing the logfile
+    // when it's hidden
+    classname = name + "_logfile_closed_controls";
+    setDisplayByClass(classname,"block");
+}
+
+// Function to show only summary for a program log
+function show_only_summary(name)
+{
+    // Hide everything that isn't a summary
+    // i.e. all the elements that have belong to
+    // classes ending with "_non_summary"
+    var classname = name + "_non_summary";
+    setDisplayByClass(classname,"none");
+
+    // Now deal with control elements
+
+    // Hide all controls that offer the option of
+    // showing the summary only
+    classname = name + "_show_summary_control";
+    setDisplayByClass(classname,"none");
+
+    // Show all controls that offer the option if
+    // showing the full log file
+    classname = name + "_show_full_logfile_control";
+    setDisplayByClass(classname,"block");
+}
+
+// Function to show full version of a program log
+function show_full_logfile(name)
+{
+    // Show all the associated elements that
+    // have class ending with "_non_summary"
+    var classname = name + "_non_summary";
+    setDisplayByClass(classname,"block");
+
+    // Now deal with control elements
+
+    // Show all controls that offer the option of
+    // showing the summary only
+    classname = name + "_show_summary_control";
+    setDisplayByClass(classname,"block");
+
+    // Hide all controls that offer the option if
+    // showing the full log file
+    classname = name + "_show_full_logfile_control";
+    setDisplayByClass(classname,"none");
+}
+
+// Open the view of a logfile fragment
+function open_fragment(n)
+{
+   var closed_classname = "fragment_closed_" + n;
+   setDisplayByClass(closed_classname,"none");
+   var open_classname = "fragment_open_" + n;
+   setDisplayByClass(open_classname,"block");
+}
+
+// Close the view of a logfile fragment
+function close_fragment(n)
+{
+   var closed_classname = "fragment_open_" + n;
+   setDisplayByClass(closed_classname,"none");
+   var open_classname = "fragment_closed_" + n;
+   setDisplayByClass(open_classname,"block");
+}
+
+// General function to reveal a specific element
+// Specify the id of an element and its display
+// style will be changed to "block"
+function showElement(name)
+{
+    // This changes the display style to be "block"
+    var obj = document.getElementById(name);
+    obj.style.display = "block";
+}
+
+// General function to hide a specific element
+// Specify the id of an element and its display
+// style will be changed to "none"
+function hideElement(name)
+{
+    // This changes the display style to be "none"
+    var obj = document.getElementById(name);
+    obj.style.display = "none";
+}
+
+// General function to set the display property for all elements
+// with a specific class
+// This is able to deal with elements that belong to multiple
+// classes
+function setDisplayByClass(classname,value)
+{
+    // Get all elements in the document
+    var elements = document.getElementsByTagName("*");
+
+    // For each element look for the "class" attribute
+    for (var i = 0; i < elements.length; i++) {
+        var node = elements.item(i);
+        // First try to get the class attribute using 'class'
+        // This seems to work on Firefox 2.* and 1.5
+        var classes = node.getAttribute('class');
+        if (classes == null) {
+            // If the attribute is null then try using the
+            // 'className' attribute instead
+            // This works for IE7 and IE6
+            classes = node.getAttribute('className');
+        }
+        if (classes != null) {
+            classes = classes.split(" ");
+            for (var k in classes) {
+                if (classes[k] == classname) {
+	            node.style.display = value;
+                }
+            }
+        }
+    }
+}
+
+// end hiding contents from old browsers  -->
+</script>
+<title>baubles: 9_refmac5.log</title>
+</head>
+<body>
+<!-- Start of logfile -->
+<!-- baubles $Id: baubles.py,v 1.9 2010/01/12 15:45:25 rmk65 Exp $ -->
+<h1>9_refmac5.log</h1>
+<!-- List of references for programs -->
+<div class="references">Please consider citing the following papers:
+<ul>
+<li> Refmac5
+<ul>
+<li> "Overview of refinement procedures within REFMAC5: utilizing data from different sources"
+   O.Kovalevskiy, R.A.Nicholls, F.Long, G.N.Murshudov,(2018) 
+   Acta Crystallogr. D74, 492-505 </li>
+<li> "Current approaches for the fitting and refinement of atomic models into cryo-EM maps using CCP-EM
+   R.A. Nicholls, M. Tykac, O.Kovalevskiy, G.N.Murshudov,(2018) 
+   Acta Crystallogr. D74, 215-227 </li>
+<li> "REFMAC5 for the refinement of macromolecular crystal structures:"
+   G.N.Murshudov, P.Skubak, A.A.Lebedev, N.S.Pannu, R.A.Steiner, R.A.Nicholls, M.D.Winn, F.Long and A.A.Vagin,(2011) 
+   Acta Crystallogr. D67, 355-367 </li>
+<li> "Refinement of Macromolecular Structures by the  Maximum-Likelihood Method:"
+   G.N. Murshudov, A.A.Vagin and E.J.Dodson,(1997)
+   Acta Crystallogr. D53, 240-255
+   EU  Validation contract: BIO2CT-92-0524 </li>
+</ul>
+</ul>
+</div>
+<div class="banner">
+<a name="Refmac5_0">
+<span class="progname">Refmac5</span>
+<span class="progvers">Version 5.8.0403</span>
+<span class="proginfo">Run at 01:47:56 on 31/12/2022</span>
+<span class="progterm">Finished with: End of Refmac_5.8.0403   </span>
+</a>
+</div>
+<p><b>Summary:</b><div class=result>
+<p><table border=2>
+<tr><th>&nbsp;</th><th>Initial</th><th>After 20 cycles</th></tr>
+<tr><td><b>R factor</b></td><td>0.4103</td><td>0.4017</td></tr>
+<tr><td><b>R<sub>free</sub></b></td><td>0.4282</td><td>0.4196</td></tr>
+<tr><td><b>RMSD Bond Length</b></td><td>0.0</td><td>0.0</td></tr>
+<tr><td><b>RMSD Bond Angle</b></td><td>0.0</td><td>0.0</td></tr>
+<tr><td><b>RMSD Chiral Centre</b></td><td>0.0</td><td>0.0</td></tr>
+</table></div></p>
+<div class="keytext">
+<p><b>Result:</b><div class=result>
+<table>
+<tr><th></th><th>Initial</th><th>Final</th></tr>
+<tr><th>R factor </th><td>0.4103</td><td>0.4017</td></tr>
+<tr><th>R free </th><td>0.4282</td><td>0.4196</td></tr>
+</table>
+</div></p>
+</div>
+<div id="REFMAC5_0_loggraph_folder" class="loggraphs">
+
+<table class="loggraph_tables">
+<tr>
+<td class="loggraph_tables">
+<div class="loggraph_tables">
+<p>The following tables were found in the logfile:</p>
+<p id="REFMAC5_0_loggraph_title_0" style="font-weight:bold"><a href="javascript://" onclick="pick_loggraph('REFMAC5_0',0,7)">Cycle    1. Rfactor analysis, F distribution v resln</a></p>
+<p id="REFMAC5_0_loggraph_title_1" style="font-weight:normal"><a href="javascript://" onclick="pick_loggraph('REFMAC5_0',1,7)">Cycle    1. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln</a></p>
+<p id="REFMAC5_0_loggraph_title_2" style="font-weight:normal"><a href="javascript://" onclick="pick_loggraph('REFMAC5_0',2,7)">Cycle   20. Rfactor analysis, F distribution v resln</a></p>
+<p id="REFMAC5_0_loggraph_title_3" style="font-weight:normal"><a href="javascript://" onclick="pick_loggraph('REFMAC5_0',3,7)">Cycle   20. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln</a></p>
+<p id="REFMAC5_0_loggraph_title_4" style="font-weight:normal"><a href="javascript://" onclick="pick_loggraph('REFMAC5_0',4,7)">Cycle   21. Rfactor analysis, F distribution v resln</a></p>
+<p id="REFMAC5_0_loggraph_title_5" style="font-weight:normal"><a href="javascript://" onclick="pick_loggraph('REFMAC5_0',5,7)">Cycle   21. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln</a></p>
+<p id="REFMAC5_0_loggraph_title_6" style="font-weight:normal"><a href="javascript://" onclick="pick_loggraph('REFMAC5_0',6,7)">Rfactor analysis, stats vs cycle</a></p>
+</div>
+</td>
+
+<td>
+<div class="loggraph_applets">
+<div id="REFMAC5_0_loggraph_0" style="display:block">
+<div class=applet><applet archive="JLogGraph.jar"
+        code="JLogGraph.class"
+        codebase="file:///opt/xtal/ccp4-8.0/bin"
+        width="500"
+        height="400">
+<param name="table" value="
+$TABLE: Cycle    1. Rfactor analysis, F distribution v resln:
+$GRAPHS
+ :Cycle    1. &lt;Rfactor&gt; v. resln :N:1,6,7,11,12:
+ :Cycle    1. &lt;Fobs&gt; and &lt;Fc&gt; v. resln :N:1,4,5,9,10:
+ :Cycle    1. % observed v. resln :N:1,3:
+$$
+ M(4SSQ/LL) NR_used %_obs M(Fo_used) M(Fc_used) Rf_used WR_used NR_free M(Fo_free) M(Fc_free) Rf_free WR_free $$
+ $$
+ 0.007 119 100.00 426.4 405.7 0.29 0.47 11 352.2 291.0 0.66 0.72
+ 0.019 182 100.00 341.3 344.1 0.34 0.43 8 392.9 472.6 0.32 0.43
+ 0.032 237 100.00 325.0 344.3 0.41 0.51 6 397.3 449.6 0.24 0.27
+ 0.044 269 99.64 411.8 409.9 0.32 0.39 9 451.1 415.9 0.35 0.41
+ 0.057 292 99.68 493.6 446.7 0.30 0.36 16 431.8 381.9 0.40 0.43
+ 0.069 318 99.70 453.5 378.0 0.36 0.42 17 528.5 395.2 0.30 0.36
+ 0.082 333 99.43 421.6 343.2 0.39 0.42 16 419.5 379.7 0.26 0.31
+ 0.094 372 100.00 391.0 309.1 0.40 0.44 17 387.7 273.7 0.56 0.65
+ 0.107 388 99.02 333.3 281.1 0.45 0.50 18 288.6 332.1 0.56 0.71
+ 0.119 401 99.07 282.2 248.6 0.45 0.49 26 339.6 264.8 0.46 0.49
+ 0.132 427 100.00 258.9 223.2 0.47 0.51 20 286.5 226.2 0.42 0.42
+ 0.144 433 98.48 248.5 217.4 0.42 0.45 21 251.2 188.1 0.41 0.44
+ 0.157 456 99.16 229.5 207.2 0.43 0.47 18 252.5 189.2 0.41 0.35
+ 0.169 471 98.82 218.2 195.3 0.45 0.48 32 249.1 187.9 0.48 0.49
+ 0.181 470 97.45 211.9 185.7 0.43 0.45 26 228.8 170.5 0.36 0.34
+ 0.194 513 99.82 210.3 184.0 0.45 0.47 28 168.2 144.7 0.43 0.49
+ 0.206 502 97.04 191.2 161.6 0.46 0.48 22 178.3 148.6 0.50 0.55
+ 0.219 551 100.00 189.2 165.1 0.46 0.48 36 184.9 140.0 0.51 0.52
+ 0.231 542 97.41 176.5 148.4 0.45 0.46 22 166.3 139.2 0.53 0.54
+ 0.244 555 98.98 161.9 143.0 0.45 0.46 29 158.4 139.0 0.41 0.38
+$$
+"><param name="list" value="4">
+</applet></div>
+<p><b>Cycle    1. Rfactor analysis, F distribution v resln</b></p>
+</div>
+<div id="REFMAC5_0_loggraph_1" style="display:none">
+<div class=applet><applet archive="JLogGraph.jar"
+        code="JLogGraph.class"
+        codebase="file:///opt/xtal/ccp4-8.0/bin"
+        width="500"
+        height="400">
+<param name="table" value="
+$TABLE: Cycle    1. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln:
+$GRAPHS
+ :Cycle    1. M(Fom) v. resln :N:1,3,5,7,8,9,10,11,12:
+$$
+ <4SSQ/LL> NREFa FOMa NREFc FOMc NREFall FOMall SigmaA_Fc1 FSCfree FSCwork CorrFoFcFree CorrFoFcWork $$
+  $$
+ 0.0070 51 0.707 68 0.494 119 0.585 0.841 0.6655 0.9038 0.0437 0.8547
+ 0.0195 115 0.622 67 0.554 182 0.597 0.877 0.9463 0.9106 0.6950 0.7798
+ 0.0320 157 0.657 80 0.579 237 0.631 0.904 0.9657 0.8719 0.7725 0.5571
+ 0.0444 199 0.733 70 0.673 269 0.718 0.935 0.8901 0.9365 0.7481 0.7779
+ 0.0569 219 0.815 73 0.756 292 0.801 0.982 0.9002 0.9404 0.6520 0.7530
+ 0.0693 246 0.796 72 0.709 318 0.776 1.010 0.9570 0.9188 0.8403 0.6805
+ 0.0818 263 0.744 70 0.557 333 0.705 0.963 0.9385 0.8984 0.8216 0.6118
+ 0.0943 294 0.632 78 0.562 372 0.617 0.907 0.7970 0.8867 0.4115 0.6058
+ 0.1067 317 0.563 71 0.453 388 0.543 0.860 0.8161 0.8541 0.4353 0.4871
+ 0.1192 329 0.500 72 0.416 401 0.485 0.818 0.8705 0.8429 0.5519 0.4658
+ 0.1316 352 0.481 75 0.324 427 0.453 0.793 0.8407 0.8391 0.3513 0.4601
+ 0.1441 365 0.479 68 0.416 433 0.469 0.781 0.8708 0.8558 0.6815 0.4845
+ 0.1566 385 0.469 71 0.447 456 0.466 0.778 0.8196 0.8525 0.2138 0.4829
+ 0.1690 396 0.520 75 0.380 471 0.497 0.794 0.8408 0.8446 0.2715 0.4438
+ 0.1815 406 0.572 64 0.427 470 0.552 0.809 0.9008 0.8558 0.6255 0.4415
+ 0.1939 440 0.616 73 0.453 513 0.593 0.825 0.8746 0.8546 0.5576 0.4056
+ 0.2064 434 0.601 68 0.498 502 0.587 0.841 0.8647 0.8412 0.4475 0.4148
+ 0.2189 476 0.638 75 0.561 551 0.627 0.848 0.8337 0.8516 0.4899 0.4033
+ 0.2313 475 0.634 67 0.518 542 0.620 0.853 0.8154 0.8545 0.3181 0.4146
+ 0.2438 485 0.649 72 0.489 557 0.628 0.857 0.8647 0.8599 0.4191 0.4661
+$$
+"><param name="list" value="4">
+</applet></div>
+<p><b>Cycle    1. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln</b></p>
+</div>
+<div id="REFMAC5_0_loggraph_2" style="display:none">
+<div class=applet><applet archive="JLogGraph.jar"
+        code="JLogGraph.class"
+        codebase="file:///opt/xtal/ccp4-8.0/bin"
+        width="500"
+        height="400">
+<param name="table" value="
+$TABLE: Cycle   20. Rfactor analysis, F distribution v resln:
+$GRAPHS
+ :Cycle   20. &lt;Rfactor&gt; v. resln :N:1,6,7,11,12:
+ :Cycle   20. &lt;Fobs&gt; and &lt;Fc&gt; v. resln :N:1,4,5,9,10:
+ :Cycle   20. % observed v. resln :N:1,3:
+$$
+ M(4SSQ/LL) NR_used %_obs M(Fo_used) M(Fc_used) Rf_used WR_used NR_free M(Fo_free) M(Fc_free) Rf_free WR_free $$
+ $$
+ 0.007 119 100.00 429.2 405.7 0.28 0.45 11 354.4 292.6 0.63 0.70
+ 0.019 182 100.00 343.5 345.2 0.32 0.41 8 395.4 480.2 0.32 0.45
+ 0.032 237 100.00 327.1 341.4 0.40 0.49 6 399.9 451.7 0.19 0.23
+ 0.044 269 99.64 414.4 406.9 0.32 0.40 9 454.0 424.5 0.36 0.44
+ 0.057 292 99.68 496.8 449.2 0.29 0.35 16 434.6 371.7 0.39 0.40
+ 0.069 318 99.70 456.4 378.7 0.36 0.41 17 531.9 401.1 0.28 0.32
+ 0.082 333 99.43 424.3 344.3 0.38 0.42 16 422.1 366.3 0.27 0.31
+ 0.094 372 100.00 393.5 309.1 0.40 0.43 17 390.2 280.0 0.54 0.62
+ 0.107 388 99.02 335.4 284.9 0.43 0.49 18 290.5 341.7 0.57 0.72
+ 0.119 401 99.07 284.0 249.7 0.43 0.47 26 341.8 266.1 0.44 0.45
+ 0.132 427 100.00 260.5 223.2 0.46 0.51 20 288.4 217.8 0.45 0.46
+ 0.144 433 98.48 250.1 216.0 0.42 0.45 21 252.8 188.0 0.38 0.41
+ 0.157 456 99.16 231.0 208.1 0.42 0.45 18 254.1 193.1 0.42 0.37
+ 0.169 471 98.82 219.6 193.7 0.44 0.47 32 250.7 190.6 0.49 0.50
+ 0.181 470 97.45 213.2 185.3 0.44 0.46 26 230.3 172.1 0.35 0.32
+ 0.194 513 99.82 211.6 182.1 0.43 0.45 28 169.3 148.1 0.40 0.45
+ 0.206 502 97.04 192.4 158.7 0.45 0.46 22 179.5 158.4 0.45 0.50
+ 0.219 551 100.00 190.4 163.5 0.46 0.48 36 186.1 147.6 0.47 0.47
+ 0.231 542 97.41 177.6 150.1 0.43 0.44 22 167.4 137.0 0.55 0.57
+ 0.244 555 98.98 162.9 141.3 0.44 0.44 29 159.4 150.5 0.41 0.38
+$$
+"><param name="list" value="4">
+</applet></div>
+<p><b>Cycle   20. Rfactor analysis, F distribution v resln</b></p>
+</div>
+<div id="REFMAC5_0_loggraph_3" style="display:none">
+<div class=applet><applet archive="JLogGraph.jar"
+        code="JLogGraph.class"
+        codebase="file:///opt/xtal/ccp4-8.0/bin"
+        width="500"
+        height="400">
+<param name="table" value="
+$TABLE: Cycle   20. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln:
+$GRAPHS
+ :Cycle   20. M(Fom) v. resln :N:1,3,5,7,8,9,10,11,12:
+$$
+ <4SSQ/LL> NREFa FOMa NREFc FOMc NREFall FOMall SigmaA_Fc1 FSCfree FSCwork CorrFoFcFree CorrFoFcWork $$
+  $$
+ 0.0070 51 0.720 68 0.505 119 0.597 0.841 0.6900 0.9094 0.0741 0.8653
+ 0.0195 115 0.639 67 0.570 182 0.614 0.877 0.9552 0.9161 0.7336 0.7954
+ 0.0320 157 0.671 80 0.593 237 0.645 0.904 0.9676 0.8830 0.8685 0.5960
+ 0.0444 199 0.742 70 0.675 269 0.725 0.938 0.9167 0.9385 0.7684 0.7838
+ 0.0569 219 0.826 73 0.780 292 0.814 0.991 0.9159 0.9455 0.6694 0.7672
+ 0.0693 246 0.813 72 0.730 318 0.794 1.023 0.9640 0.9254 0.8533 0.6981
+ 0.0818 263 0.765 70 0.567 333 0.723 0.971 0.9333 0.9053 0.8090 0.6316
+ 0.0943 294 0.646 78 0.579 372 0.632 0.907 0.8316 0.8905 0.4955 0.6192
+ 0.1067 317 0.556 71 0.466 388 0.540 0.821 0.8198 0.8616 0.4485 0.5193
+ 0.1192 329 0.448 72 0.387 401 0.437 0.731 0.8749 0.8428 0.5353 0.4919
+ 0.1316 352 0.415 75 0.274 427 0.390 0.696 0.8051 0.8393 0.3088 0.4902
+ 0.1441 365 0.427 68 0.380 433 0.420 0.705 0.8891 0.8523 0.7255 0.4999
+ 0.1566 385 0.442 71 0.421 456 0.439 0.725 0.8287 0.8561 0.2832 0.5083
+ 0.1690 396 0.506 75 0.359 471 0.483 0.769 0.8146 0.8509 0.0883 0.4746
+ 0.1815 406 0.579 64 0.422 470 0.557 0.807 0.9182 0.8548 0.7200 0.4461
+ 0.1939 440 0.627 73 0.468 513 0.605 0.825 0.8830 0.8601 0.5878 0.4292
+ 0.2064 434 0.613 68 0.497 502 0.597 0.841 0.8813 0.8459 0.5012 0.4342
+ 0.2189 476 0.642 75 0.561 551 0.631 0.848 0.8554 0.8514 0.5731 0.4099
+ 0.2313 475 0.640 67 0.568 542 0.632 0.853 0.8121 0.8695 0.3350 0.4719
+ 0.2438 485 0.639 72 0.488 557 0.619 0.857 0.8747 0.8680 0.4471 0.5072
+$$
+"><param name="list" value="4">
+</applet></div>
+<p><b>Cycle   20. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln</b></p>
+</div>
+<div id="REFMAC5_0_loggraph_4" style="display:none">
+<div class=applet><applet archive="JLogGraph.jar"
+        code="JLogGraph.class"
+        codebase="file:///opt/xtal/ccp4-8.0/bin"
+        width="500"
+        height="400">
+<param name="table" value="
+$TABLE: Cycle   21. Rfactor analysis, F distribution v resln:
+$GRAPHS
+ :Cycle   21. &lt;Rfactor&gt; v. resln :N:1,6,7,11,12:
+ :Cycle   21. &lt;Fobs&gt; and &lt;Fc&gt; v. resln :N:1,4,5,9,10:
+ :Cycle   21. % observed v. resln :N:1,3:
+$$
+ M(4SSQ/LL) NR_used %_obs M(Fo_used) M(Fc_used) Rf_used WR_used NR_free M(Fo_free) M(Fc_free) Rf_free WR_free $$
+ $$
+ 0.007 119 100.00 429.2 405.7 0.28 0.45 11 354.4 292.6 0.63 0.70
+ 0.019 182 100.00 343.5 345.2 0.32 0.41 8 395.4 480.2 0.32 0.45
+ 0.032 237 100.00 327.1 341.4 0.40 0.49 6 399.9 451.7 0.19 0.23
+ 0.044 269 99.64 414.4 406.9 0.32 0.40 9 454.0 424.5 0.36 0.44
+ 0.057 292 99.68 496.8 449.2 0.29 0.35 16 434.6 371.7 0.39 0.40
+ 0.069 318 99.70 456.4 378.7 0.36 0.41 17 531.9 401.1 0.28 0.32
+ 0.082 333 99.43 424.3 344.3 0.38 0.42 16 422.1 366.3 0.27 0.31
+ 0.094 372 100.00 393.5 309.1 0.40 0.43 17 390.2 280.0 0.54 0.62
+ 0.107 388 99.02 335.4 284.9 0.43 0.49 18 290.5 341.7 0.57 0.72
+ 0.119 401 99.07 284.0 249.7 0.43 0.47 26 341.8 266.1 0.44 0.45
+ 0.132 427 100.00 260.5 223.2 0.46 0.51 20 288.4 217.7 0.45 0.46
+ 0.144 433 98.48 250.1 216.0 0.42 0.45 21 252.8 188.0 0.38 0.41
+ 0.157 456 99.16 231.0 208.1 0.42 0.45 18 254.1 193.1 0.42 0.37
+ 0.169 471 98.82 219.6 193.7 0.44 0.47 32 250.7 190.6 0.49 0.50
+ 0.181 470 97.45 213.2 185.3 0.44 0.46 26 230.3 172.1 0.35 0.32
+ 0.194 513 99.82 211.6 182.1 0.43 0.45 28 169.3 148.1 0.40 0.45
+ 0.206 502 97.04 192.4 158.7 0.45 0.46 22 179.5 158.4 0.45 0.50
+ 0.219 551 100.00 190.4 163.5 0.46 0.48 36 186.1 147.6 0.47 0.47
+ 0.231 542 97.41 177.6 150.1 0.43 0.44 22 167.4 137.0 0.55 0.57
+ 0.244 555 98.98 162.9 141.3 0.44 0.44 29 159.4 150.4 0.41 0.38
+$$
+"><param name="list" value="4">
+</applet></div>
+<p><b>Cycle   21. Rfactor analysis, F distribution v resln</b></p>
+</div>
+<div id="REFMAC5_0_loggraph_5" style="display:none">
+<div class=applet><applet archive="JLogGraph.jar"
+        code="JLogGraph.class"
+        codebase="file:///opt/xtal/ccp4-8.0/bin"
+        width="500"
+        height="400">
+<param name="table" value="
+$TABLE: Cycle   21. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln:
+$GRAPHS
+ :Cycle   21. M(Fom) v. resln :N:1,3,5,7,8,9,10,11,12:
+$$
+ <4SSQ/LL> NREFa FOMa NREFc FOMc NREFall FOMall SigmaA_Fc1 FSCfree FSCwork CorrFoFcFree CorrFoFcWork $$
+  $$
+ 0.0070 51 0.720 68 0.505 119 0.597 0.841 0.6900 0.9094 0.0741 0.8653
+ 0.0195 115 0.639 67 0.570 182 0.614 0.877 0.9552 0.9161 0.7336 0.7954
+ 0.0320 157 0.671 80 0.593 237 0.645 0.904 0.9676 0.8830 0.8685 0.5960
+ 0.0444 199 0.742 70 0.675 269 0.725 0.938 0.9167 0.9385 0.7684 0.7838
+ 0.0569 219 0.826 73 0.780 292 0.814 0.991 0.9159 0.9455 0.6694 0.7672
+ 0.0693 246 0.813 72 0.730 318 0.794 1.023 0.9640 0.9254 0.8533 0.6981
+ 0.0818 263 0.765 70 0.567 333 0.723 0.971 0.9333 0.9053 0.8090 0.6316
+ 0.0943 294 0.646 78 0.579 372 0.632 0.907 0.8316 0.8905 0.4955 0.6192
+ 0.1067 317 0.556 71 0.466 388 0.540 0.821 0.8198 0.8616 0.4485 0.5193
+ 0.1192 329 0.448 72 0.387 401 0.437 0.731 0.8749 0.8428 0.5353 0.4918
+ 0.1316 352 0.415 75 0.274 427 0.390 0.696 0.8051 0.8393 0.3088 0.4902
+ 0.1441 365 0.427 68 0.380 433 0.420 0.705 0.8891 0.8523 0.7255 0.4999
+ 0.1566 385 0.442 71 0.421 456 0.439 0.725 0.8287 0.8561 0.2832 0.5083
+ 0.1690 396 0.506 75 0.359 471 0.483 0.769 0.8146 0.8509 0.0883 0.4746
+ 0.1815 406 0.579 64 0.422 470 0.557 0.807 0.9182 0.8548 0.7200 0.4461
+ 0.1939 440 0.627 73 0.468 513 0.605 0.825 0.8830 0.8601 0.5878 0.4292
+ 0.2064 434 0.613 68 0.497 502 0.597 0.841 0.8813 0.8459 0.5012 0.4343
+ 0.2189 476 0.642 75 0.561 551 0.631 0.848 0.8554 0.8514 0.5731 0.4099
+ 0.2313 475 0.640 67 0.568 542 0.632 0.853 0.8121 0.8695 0.3351 0.4719
+ 0.2438 485 0.639 72 0.488 557 0.619 0.857 0.8747 0.8680 0.4470 0.5072
+$$
+"><param name="list" value="4">
+</applet></div>
+<p><b>Cycle   21. FSC and  Fom(&lt;cos(DelPhi)&gt;-acentric, centric, overall v resln</b></p>
+</div>
+<div id="REFMAC5_0_loggraph_6" style="display:none">
+<div class=applet><applet archive="JLogGraph.jar"
+        code="JLogGraph.class"
+        codebase="file:///opt/xtal/ccp4-8.0/bin"
+        width="500"
+        height="400">
+<param name="table" value="
+$TABLE: Rfactor analysis, stats vs cycle:
+$GRAPHS
+ :&lt;Rfactor&gt; vs cycle :N:1,2,3:
+ :FOM vs cycle :N:1,4:
+ :-LL vs cycle :N:1,5:
+ :-LLfree vs cycle :N:1,6:
+ :Geometry vs cycle:N:1,7,8,9,10,11:
+$$
+ Ncyc Rfact Rfree FOM -LL -LLfree rmsBOND zBOND rmsANGL zANGL rmsCHIRAL $$
+ $$
+ 0 0.4103 0.4282 0.588 48242. 2454 0.0 0.0 0.0 0.0 0.0
+ 1 0.4047 0.4234 0.581 48226. 2454 0.0 0.0 0.0 0.0 0.0
+ 2 0.4026 0.4214 0.582 48198. 2454 0.0 0.0 0.0 0.0 0.0
+ 3 0.4021 0.4204 0.582 48198. 2454 0.0 0.0 0.0 0.0 0.0
+ 4 0.4019 0.4199 0.582 48198. 2454 0.0 0.0 0.0 0.0 0.0
+ 5 0.4017 0.4197 0.583 48185. 2453 0.0 0.0 0.0 0.0 0.0
+ 6 0.4017 0.4195 0.583 48188. 2453 0.0 0.0 0.0 0.0 0.0
+ 7 0.4017 0.4195 0.583 48194. 2453 0.0 0.0 0.0 0.0 0.0
+ 8 0.4017 0.4195 0.583 48194. 2453 0.0 0.0 0.0 0.0 0.0
+ 9 0.4017 0.4196 0.583 48195. 2453 0.0 0.0 0.0 0.0 0.0
+ 10 0.4017 0.4196 0.583 48195. 2453 0.0 0.0 0.0 0.0 0.0
+ 11 0.4017 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 12 0.4017 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 13 0.4017 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 14 0.4017 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 15 0.4017 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 16 0.4017 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 17 0.4017 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 18 0.4018 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 19 0.4018 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+ 20 0.4017 0.4196 0.583 48193. 2453 0.0 0.0 0.0 0.0 0.0
+$$
+"><param name="list" value="4">
+</applet></div>
+<p><b>Rfactor analysis, stats vs cycle</b></p>
+</div>
+</div>
+</td>
+
+</tr>
+</table>
+</div>
+<div class="doclink"><p><a href="/opt/xtal/ccp4-8.0/html/refmac5.html">[Documentation]</a></p></div>
+
+<!-- Top-level visibility controls for REFMAC5_0 -->
+
+<div class="REFMAC5_0_logfile_closed_controls">
+   <!-- Controls available when logfile is completely hidden -->
+   <p>
+   <a href="javascript://"
+      onclick="open_summary_logfile('REFMAC5_0')">[Show logfile summary]</a>
+   <a href="javascript://"
+      onclick="open_full_logfile('REFMAC5_0')">[Show full logfile]</a>
+   </p>
+</div>
+
+    <div class="REFMAC5_0_logfile_open_controls" style="display: none">
+   <!-- Controls available if some or all the logfile is visible -->
+   <div class="REFMAC5_0_show_full_logfile_control" style="display: none">
+      <p>Current view: summary only
+      <a href="javascript://"
+         onclick="show_full_logfile('REFMAC5_0')">[Show full logfile]</a>
+      <a href="javascript://"
+         onclick="close_logfile('REFMAC5_0')">[Hide logfile]</a>
+     </p>
+   </div>
+   <div class="REFMAC5_0_show_summary_control">
+      <p>Current view: full logfile
+      <a href="javascript://"
+         onclick="show_only_summary('REFMAC5_0')">[Show logfile summary]</a>
+      <a href="javascript://"
+         onclick="close_logfile('REFMAC5_0')">[Hide logfile]</a>
+      </p>
+   </div>
+</div>
+
+<!-- Start of the REFMAC5_0 logfile -->
+<div class="REFMAC5_0_logfile" style="display: none">
+
+<div class="logfile">
+
+<div class="summary"><pre> ###############################################################
+ ###############################################################
+ ###############################################################
+ ### CCP4 8.0.007: Refmac          version 5.8.0403 : 11/30/22##
+ ###############################################################
+ User: noguhiro2007  Run date: 31/12/2022 Run time: 01:47:56 
+
+ Please reference: Collaborative Computational Project, Number 4. 2011.
+ &quot;Overview of the CCP4 suite and current developments&quot;. Acta Cryst. D67, 235-242.
+ as well as any specific reference in the program write-up.
+
+</pre></div>
+
+<div class="REFMAC5_0_non_summary non_summary"><pre> $TEXT:Reference1: $$ Primary reference $$ 
+   &quot;Overview of refinement procedures within REFMAC5: utilizing data from different sources&quot;
+   O.Kovalevskiy, R.A.Nicholls, F.Long, G.N.Murshudov,(2018) 
+   Acta Crystallogr. D74, 492-505
+
+ $$
+ $SUMMARY :Reference1:  $$ Refmac: $$
+ :TEXT:Reference1: $$
+
+ $TEXT:Reference1: $$ Primary reference for EM $$ 
+   &quot;Current approaches for the fitting and refinement of atomic models into cryo-EM maps using CCP-EM
+   R.A. Nicholls, M. Tykac, O.Kovalevskiy, G.N.Murshudov,(2018) 
+   Acta Crystallogr. D74, 215-227
+
+ $$
+ $SUMMARY :Reference2:  $$ Refmac: $$
+ :TEXT:Reference1: $$
+
+ $TEXT:Reference1: $$ Secondary reference $$ 
+   &quot;REFMAC5 for the refinement of macromolecular crystal structures:&quot;
+   G.N.Murshudov, P.Skubak, A.A.Lebedev, N.S.Pannu, R.A.Steiner, R.A.Nicholls, M.D.Winn, F.Long and A.A.Vagin,(2011) 
+   Acta Crystallogr. D67, 355-367
+
+ $$
+ $SUMMARY :Reference3:  $$ Refmac: $$
+ :TEXT:Reference1: $$
+
+ $TEXT:Reference2: $$ Secondary reference $$ 
+   &quot;Refinement of Macromolecular Structures by the  Maximum-Likelihood Method:&quot;
+   G.N. Murshudov, A.A.Vagin and E.J.Dodson,(1997)
+   Acta Crystallogr. D53, 240-255
+   EU  Validation contract: BIO2CT-92-0524
+
+ $$
+ $SUMMARY :Reference4:  $$ Refmac: $$
+ :TEXT:Reference2: $$
+
+  Data line--- refi resolution 2.0 55.535
+  Data line--- make check NONE
+  Data line--- make     hydrogen ALL     hout NO     peptide NO     cispeptide YES     ssbridge YES     symmetry YES     sugar YES     connectivity NO     link NO
+  Data line--- refi     type RIGID     resi MLKF     meth CGMAT     bref over
+  Data line--- rigid ncycle 20
+  Data line--- scal     type SIMP     LSSC     ANISO     EXPE
+  Data line--- solvent YES
+  Data line--- weight     AUTO
+  Data line--- monitor MEDIUM     torsion 10.0     distance 10.0     angle 10.0     plane 10.0     chiral 10.0     bfactor 10.0     bsphere 10.0     rbond 10.0     ncsr 10.0
+  Data line--- labin  FP=F_XDSdataset SIGFP=SIGF_XDSdataset    FREE=FreeR_flag
+  Data line--- labout  FC=FC FWT=FWT PHIC=PHIC PHWT=PHWT DELFWT=DELFWT PHDELWT=PHDELWT FOM=FOM
+  Data line--- PNAME XDSproject
+  Data line--- DNAME XDSdataset
+  Data line--- RSIZE 80
+  Data line--- END
+
+ OPENED INPUT MTZ FILE 
+ Logical Name: HKLIN   Filename: /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A.mtz 
+
+    ****                     Input and Default parameters#                      ****
+
+Input coordinate file.  Logical name - XYZIN actual file name  - /home/noguhiro2007/project/lysozyme/ccp4/lysozyme_ce6c6_unrelaxed_rank_5_model_1_molrep2.pdb
+Output coordinate file. Logical name - XYZOUT actual file name - /home/noguhiro2007/project/lysozyme/ccp4/lysozyme_ce6c6_unrelaxed_rank_5_model_1_molrep2_refmac1.pdb
+Input reflection file.  Logical name - HKLIN actual file name  - /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A.mtz
+Output reflection file. Logical name - HKLOUT actual file name - /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A_refmac1.mtz
+
+Cell from mtz :    78.538    78.538    37.285    90.000    90.000    90.000
+Space group from mtz: number -   96; name - P 43 21 2
+
+  Refinement type                        : Rigid Body
+
+    ****                           Domain Definition                            ****
+
+  No domains have been defined. All atoms will be refined as one rigid body
+  Residual                               : Rice Maximum Likelihood for Fs
+
+    ****                    Least-square scaling parameters                     ****
+
+Overall scale
+Overall B value
+Overall anisotropic B with tr(B) = 0.0
+Constant bulk solvent in non protein region
+Probe radii for non-ions     1.200
+Probe radii for ions         0.800
+Shrinkage of the mask  by    0.800
+
+    ****                 Map sharpening parameters and methods                  ****
+
+No map sharpening will be performed
+
+  Experimental sigmas used for weighting
+  Number of Bins and width:    20       0.0125
+  Scaling type                           :
+          Wilson scaling type with Guassians
+
+  Estimation of D/Sigma in resolution bins
+  using  free set of reflns with experimental sigmas
+  using  free set of reflns with experimental sigmas
+
+  Scaling and SigmaA resln:    55.5348  2.0000
+
+Monitoring style is &quot;MEDIUM&quot;. Complete information will be printed out in the
+first and last cycle. In all other cycles minimum information will be printed out
+Sigma cutoffs for printing out outliers
+If deviation of restraint parameter &gt; alpha*sigma then information will be printed out
+Distance outliers      10.000
+Angle outliers         10.000
+Torsion outliers       10.000
+Chiral volume outliers 10.000
+Plane outliers         10.000
+Non-bonding outliers   10.000
+---------------------------------------------------------------
+
+ Input file :/home/noguhiro2007/project/lysozyme/ccp4/lysozyme_ce6c6_unrelaxed_
+  set_mod
+
+ Scattering factors file : /opt/xtal/ccp4-8.0/lib/data/atomsf.lib
+
+_ccp4_form_factor.scat_method    'Sum of Gaussians'
+_ccp4_form_factor.scat_data_source  X-ray
+
+ loop_
+     _atom_type_symbol
+     _atom_type_scat_Cromer_Mann_a1
+     _atom_type_scat_Cromer_Mann_b1
+     _atom_type_scat_Cromer_Mann_a2
+     _atom_type_scat_Cromer_Mann_b2
+     _atom_type_scat_Cromer_Mann_a3
+     _atom_type_scat_Cromer_Mann_b3
+     _atom_type_scat_Cromer_Mann_a4
+     _atom_type_scat_Cromer_Mann_b4
+     _atom_type_scat_Cromer_Mann_c
+
+  N     12.2220   0.0057   3.1346   9.8933   2.0141  28.9975   1.1672   0.5826 -11.5379
+  C      2.3103  20.8439   1.0201  10.2075   1.5888   0.5687   0.8651  51.6512   0.2156
+  O      3.0487  13.2771   2.2870   5.7011   1.5464   0.3239   0.8671  32.9089   0.2508
+  S      6.9054   1.4679   5.2035  22.2151   1.4379   0.2536   1.5863  56.1720   1.0494
+
+    ****                           Info from mtz file                           ****
+
+FreeR flag                            0
+Number of &quot;free&quot; reflections        403
+Number of   all  reflections       8315
+--------------------------------------------------------------------------------
+ Number of reflections in file      29275
+ Number of reflections read           8315
+
+   Current auto weighting coefficient =    7.49955416    
+
+     Rigid body cycle =      1
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8625, B  =   -8.5075
+Partial structure    1: scale =     0.3690, B  =   18.3906
+Overall anisotropic scale factors
+   B11 =   0.03 B22 =   0.03 B33 =  -0.07 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+
+    ****                Things for loggraph, R factor and others                ****
+
+$TABLE: Cycle    1. Rfactor analysis, F distribution v resln  :
+$GRAPHS:Cycle    1.  v. resln :N:1,6,7,11,12:
+:Cycle    1.  and  v. resln :N:1,4,5,9,10:
+:Cycle    1. % observed v. resln :N:1,3:
+$$
+M(4SSQ/LL) NR_used %_obs M(Fo_used) M(Fc_used) Rf_used WR_used
+NR_free M(Fo_free) M(Fc_free) Rf_free   WR_free $$
+$$
+ 0.007     119 100.00   426.4   405.7  0.29  0.47      11   352.2   291.0  0.66  0.72
+ 0.019     182 100.00   341.3   344.1  0.34  0.43       8   392.9   472.6  0.32  0.43
+ 0.032     237 100.00   325.0   344.3  0.41  0.51       6   397.3   449.6  0.24  0.27
+ 0.044     269  99.64   411.8   409.9  0.32  0.39       9   451.1   415.9  0.35  0.41
+ 0.057     292  99.68   493.6   446.7  0.30  0.36      16   431.8   381.9  0.40  0.43
+ 0.069     318  99.70   453.5   378.0  0.36  0.42      17   528.5   395.2  0.30  0.36
+ 0.082     333  99.43   421.6   343.2  0.39  0.42      16   419.5   379.7  0.26  0.31
+ 0.094     372 100.00   391.0   309.1  0.40  0.44      17   387.7   273.7  0.56  0.65
+ 0.107     388  99.02   333.3   281.1  0.45  0.50      18   288.6   332.1  0.56  0.71
+ 0.119     401  99.07   282.2   248.6  0.45  0.49      26   339.6   264.8  0.46  0.49
+ 0.132     427 100.00   258.9   223.2  0.47  0.51      20   286.5   226.2  0.42  0.42
+ 0.144     433  98.48   248.5   217.4  0.42  0.45      21   251.2   188.1  0.41  0.44
+ 0.157     456  99.16   229.5   207.2  0.43  0.47      18   252.5   189.2  0.41  0.35
+ 0.169     471  98.82   218.2   195.3  0.45  0.48      32   249.1   187.9  0.48  0.49
+ 0.181     470  97.45   211.9   185.7  0.43  0.45      26   228.8   170.5  0.36  0.34
+ 0.194     513  99.82   210.3   184.0  0.45  0.47      28   168.2   144.7  0.43  0.49
+ 0.206     502  97.04   191.2   161.6  0.46  0.48      22   178.3   148.6  0.50  0.55
+ 0.219     551 100.00   189.2   165.1  0.46  0.48      36   184.9   140.0  0.51  0.52
+ 0.231     542  97.41   176.5   148.4  0.45  0.46      22   166.3   139.2  0.53  0.54
+ 0.244     555  98.98   161.9   143.0  0.45  0.46      29   158.4   139.0  0.41  0.38
+$$
+
+    ****                      Fom and SigmaA vs resolution                      ****
+
+ $TABLE: Cycle    1. FSC and  Fom(-acentric, centric, overall v resln:
+ $GRAPHS:Cycle    1. M(Fom) v. resln :N:1,3,5,7,8,9,10,11,12:
+ $$
+ &lt;4SSQ/LL&gt; NREFa  FOMa  NREFc FOMc NREFall FOMall  SigmaA_Fc1 FSCfree  FSCwork CorrFoFcFree CorrFoFcWork$$
+ $$
+  0.0070     51   0.707     68   0.494    119   0.585  0.841  0.6655  0.9038  0.0437  0.8547
+  0.0195    115   0.622     67   0.554    182   0.597  0.877  0.9463  0.9106  0.6950  0.7798
+  0.0320    157   0.657     80   0.579    237   0.631  0.904  0.9657  0.8719  0.7725  0.5571
+  0.0444    199   0.733     70   0.673    269   0.718  0.935  0.8901  0.9365  0.7481  0.7779
+  0.0569    219   0.815     73   0.756    292   0.801  0.982  0.9002  0.9404  0.6520  0.7530
+  0.0693    246   0.796     72   0.709    318   0.776  1.010  0.9570  0.9188  0.8403  0.6805
+  0.0818    263   0.744     70   0.557    333   0.705  0.963  0.9385  0.8984  0.8216  0.6118
+  0.0943    294   0.632     78   0.562    372   0.617  0.907  0.7970  0.8867  0.4115  0.6058
+  0.1067    317   0.563     71   0.453    388   0.543  0.860  0.8161  0.8541  0.4353  0.4871
+  0.1192    329   0.500     72   0.416    401   0.485  0.818  0.8705  0.8429  0.5519  0.4658
+  0.1316    352   0.481     75   0.324    427   0.453  0.793  0.8407  0.8391  0.3513  0.4601
+  0.1441    365   0.479     68   0.416    433   0.469  0.781  0.8708  0.8558  0.6815  0.4845
+  0.1566    385   0.469     71   0.447    456   0.466  0.778  0.8196  0.8525  0.2138  0.4829
+  0.1690    396   0.520     75   0.380    471   0.497  0.794  0.8408  0.8446  0.2715  0.4438
+  0.1815    406   0.572     64   0.427    470   0.552  0.809  0.9008  0.8558  0.6255  0.4415
+  0.1939    440   0.616     73   0.453    513   0.593  0.825  0.8746  0.8546  0.5576  0.4056
+  0.2064    434   0.601     68   0.498    502   0.587  0.841  0.8647  0.8412  0.4475  0.4148
+  0.2189    476   0.638     75   0.561    551   0.627  0.848  0.8337  0.8516  0.4899  0.4033
+  0.2313    475   0.634     67   0.518    542   0.620  0.853  0.8154  0.8545  0.3181  0.4146
+  0.2438    485   0.649     72   0.489    557   0.628  0.857  0.8647  0.8599  0.4191  0.4661
+ $$
+Resolution limits                    =     35.148     2.000
+Number of used reflections           =       7833
+Percentage observed                  =    99.0018
+Percentage of free reflections       =     4.8469
+Overall R factor                     =     0.4103
+Free R factor                        =     0.4282
+Average Fourier shell correlation    =     0.8664
+AverageFree Fourier shell correlation=     0.8592
+Overall weighted R factor            =     0.4593
+Free weighted R factor               =     0.4665
+Overall weighted R2 factor           =     0.5602
+Free weighted R2 factor              =     0.5649
+Average correlation coefficient      =     0.5096
+Overall correlation coefficient      =     0.6939
+Free correlation coefficient         =     0.6601
+Cruickshanks DPI for coordinate error=     0.2991
+DPI based on free R factor           =     0.3122
+Overall figure of merit              =     0.5878
+ML based su of positional parameters =     0.3260
+ML based su of thermal parameters    =    11.3283
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.367     0.665    -0.370
+ Euler angles and deltaTg:         0.07     0.16     0.07    -0.01    -0.00    -0.06
+
+ Matrix and deltaTg
+        1.000    -0.003     0.003
+        0.003     1.000     0.000
+       -0.003     0.000     1.000
+       -0.013    -0.000    -0.063
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:    -45.00     0.08     0.15    -0.01    -0.00    -0.06
+
+     Rigid body cycle =      2
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8569, B  =   -8.4211
+Partial structure    1: scale =     0.3674, B  =   18.2449
+Overall anisotropic scale factors
+   B11 =   0.07 B22 =   0.07 B33 =  -0.14 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4047
+Free R factor                        =     0.4234
+Average Fourier shell correlation    =     0.8693
+AverageFree Fourier shell correlation=     0.8631
+Average correlation coefficient      =     0.5262
+Overall figure of merit              =     0.5810
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.374     0.665    -0.405
+ Euler angles and deltaTg:         0.12     0.25     0.12    -0.02    -0.00    -0.10
+
+ Matrix and deltaTg
+        1.000    -0.004     0.004
+        0.004     1.000     0.000
+       -0.004     0.000     1.000
+       -0.020    -0.001    -0.098
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:    -45.00     0.12     0.23    -0.02    -0.00    -0.10
+
+     Rigid body cycle =      3
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8576, B  =   -8.4961
+Partial structure    1: scale =     0.3672, B  =   18.3954
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4026
+Free R factor                        =     0.4214
+Average Fourier shell correlation    =     0.8705
+AverageFree Fourier shell correlation=     0.8647
+Average correlation coefficient      =     0.5318
+Overall figure of merit              =     0.5818
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.377     0.664    -0.421
+ Euler angles and deltaTg:         0.13     0.30     0.14    -0.02    -0.00    -0.11
+
+ Matrix and deltaTg
+        1.000    -0.005     0.005
+        0.005     1.000     0.000
+       -0.005     0.000     1.000
+       -0.023    -0.001    -0.114
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     90.00    47.16     0.41    -0.02    -0.00    -0.11
+
+     Rigid body cycle =      4
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4868
+Partial structure    1: scale =     0.3674, B  =   17.8652
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4021
+Free R factor                        =     0.4204
+Average Fourier shell correlation    =     0.8708
+AverageFree Fourier shell correlation=     0.8652
+Average correlation coefficient      =     0.5329
+Overall figure of merit              =     0.5821
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.379     0.664    -0.428
+ Euler angles and deltaTg:         0.14     0.32     0.15    -0.02    -0.00    -0.12
+
+ Matrix and deltaTg
+        1.000    -0.005     0.006
+        0.005     1.000     0.000
+       -0.006     0.000     1.000
+       -0.025    -0.002    -0.122
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     90.00    47.25     0.44    -0.02    -0.00    -0.12
+
+     Rigid body cycle =      5
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8567, B  =   -8.4658
+Partial structure    1: scale =     0.3676, B  =   17.2731
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4019
+Free R factor                        =     0.4199
+Average Fourier shell correlation    =     0.8709
+AverageFree Fourier shell correlation=     0.8656
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5822
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.380     0.664    -0.432
+ Euler angles and deltaTg:         0.15     0.34     0.16    -0.03    -0.00    -0.12
+
+ Matrix and deltaTg
+        1.000    -0.005     0.006
+        0.005     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.125
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     90.00    47.53     0.46    -0.03    -0.00    -0.12
+
+     Rigid body cycle =      6
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8578, B  =   -8.4347
+Partial structure    1: scale =     0.3674, B  =   16.6815
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4197
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8659
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.380     0.664    -0.433
+ Euler angles and deltaTg:         0.15     0.34     0.16    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.005     0.006
+        0.005     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.126
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     90.00    47.56     0.46    -0.03    -0.00    -0.13
+
+     Rigid body cycle =      7
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8575, B  =   -8.4364
+Partial structure    1: scale =     0.3674, B  =   16.5545
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4195
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.434
+ Euler angles and deltaTg:         0.15     0.35     0.16    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.127
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     90.00    47.59     0.47    -0.03    -0.00    -0.13
+
+     Rigid body cycle =      8
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8569, B  =   -8.4570
+Partial structure    1: scale =     0.3673, B  =   16.6534
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4195
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5335
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.434
+ Euler angles and deltaTg:         0.15     0.35     0.16    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.127
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     90.00    47.60     0.47    -0.03    -0.00    -0.13
+
+     Rigid body cycle =      9
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8568, B  =   -8.4594
+Partial structure    1: scale =     0.3672, B  =   16.6646
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4195
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8661
+Average correlation coefficient      =     0.5335
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.434
+ Euler angles and deltaTg:         0.15     0.35     0.16    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.56     0.47    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     10
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8568, B  =   -8.4605
+Partial structure    1: scale =     0.3672, B  =   16.7081
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5335
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.434
+ Euler angles and deltaTg:         0.15     0.35     0.16    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.69     0.47    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     11
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8568, B  =   -8.4586
+Partial structure    1: scale =     0.3672, B  =   16.7185
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.16 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5335
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.434
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.75     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     12
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4533
+Partial structure    1: scale =     0.3672, B  =   16.6905
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8709
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.73     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     13
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4531
+Partial structure    1: scale =     0.3672, B  =   16.6975
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.73     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     14
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4537
+Partial structure    1: scale =     0.3672, B  =   16.7127
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.72     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     15
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4532
+Partial structure    1: scale =     0.3672, B  =   16.7025
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.72     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     16
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4536
+Partial structure    1: scale =     0.3672, B  =   16.7127
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8709
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.72     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     17
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4535
+Partial structure    1: scale =     0.3672, B  =   16.7134
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8710
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.72     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     18
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4531
+Partial structure    1: scale =     0.3672, B  =   16.7035
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8709
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.72     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     19
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4535
+Partial structure    1: scale =     0.3672, B  =   16.7129
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Overall R factor                     =     0.4018
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8709
+AverageFree Fourier shell correlation=     0.8660
+Average correlation coefficient      =     0.5334
+Overall figure of merit              =     0.5827
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.72     0.48    -0.03    -0.00    -0.13
+
+     Rigid body cycle =     20
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4534
+Partial structure    1: scale =     0.3672, B  =   16.7129
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+
+    ****                Things for loggraph, R factor and others                ****
+
+$TABLE: Cycle   20. Rfactor analysis, F distribution v resln  :
+$GRAPHS:Cycle   20.  v. resln :N:1,6,7,11,12:
+:Cycle   20.  and  v. resln :N:1,4,5,9,10:
+:Cycle   20. % observed v. resln :N:1,3:
+$$
+M(4SSQ/LL) NR_used %_obs M(Fo_used) M(Fc_used) Rf_used WR_used
+NR_free M(Fo_free) M(Fc_free) Rf_free   WR_free $$
+$$
+ 0.007     119 100.00   429.2   405.7  0.28  0.45      11   354.4   292.6  0.63  0.70
+ 0.019     182 100.00   343.5   345.2  0.32  0.41       8   395.4   480.2  0.32  0.45
+ 0.032     237 100.00   327.1   341.4  0.40  0.49       6   399.9   451.7  0.19  0.23
+ 0.044     269  99.64   414.4   406.9  0.32  0.40       9   454.0   424.5  0.36  0.44
+ 0.057     292  99.68   496.8   449.2  0.29  0.35      16   434.6   371.7  0.39  0.40
+ 0.069     318  99.70   456.4   378.7  0.36  0.41      17   531.9   401.1  0.28  0.32
+ 0.082     333  99.43   424.3   344.3  0.38  0.42      16   422.1   366.3  0.27  0.31
+ 0.094     372 100.00   393.5   309.1  0.40  0.43      17   390.2   280.0  0.54  0.62
+ 0.107     388  99.02   335.4   284.9  0.43  0.49      18   290.5   341.7  0.57  0.72
+ 0.119     401  99.07   284.0   249.7  0.43  0.47      26   341.8   266.1  0.44  0.45
+ 0.132     427 100.00   260.5   223.2  0.46  0.51      20   288.4   217.8  0.45  0.46
+ 0.144     433  98.48   250.1   216.0  0.42  0.45      21   252.8   188.0  0.38  0.41
+ 0.157     456  99.16   231.0   208.1  0.42  0.45      18   254.1   193.1  0.42  0.37
+ 0.169     471  98.82   219.6   193.7  0.44  0.47      32   250.7   190.6  0.49  0.50
+ 0.181     470  97.45   213.2   185.3  0.44  0.46      26   230.3   172.1  0.35  0.32
+ 0.194     513  99.82   211.6   182.1  0.43  0.45      28   169.3   148.1  0.40  0.45
+ 0.206     502  97.04   192.4   158.7  0.45  0.46      22   179.5   158.4  0.45  0.50
+ 0.219     551 100.00   190.4   163.5  0.46  0.48      36   186.1   147.6  0.47  0.47
+ 0.231     542  97.41   177.6   150.1  0.43  0.44      22   167.4   137.0  0.55  0.57
+ 0.244     555  98.98   162.9   141.3  0.44  0.44      29   159.4   150.5  0.41  0.38
+$$
+
+    ****                      Fom and SigmaA vs resolution                      ****
+
+ $TABLE: Cycle   20. FSC and  Fom(-acentric, centric, overall v resln:
+ $GRAPHS:Cycle   20. M(Fom) v. resln :N:1,3,5,7,8,9,10,11,12:
+ $$
+ &lt;4SSQ/LL&gt; NREFa  FOMa  NREFc FOMc NREFall FOMall  SigmaA_Fc1 FSCfree  FSCwork CorrFoFcFree CorrFoFcWork$$
+ $$
+  0.0070     51   0.720     68   0.505    119   0.597  0.841  0.6900  0.9094  0.0741  0.8653
+  0.0195    115   0.639     67   0.570    182   0.614  0.877  0.9552  0.9161  0.7336  0.7954
+  0.0320    157   0.671     80   0.593    237   0.645  0.904  0.9676  0.8830  0.8685  0.5960
+  0.0444    199   0.742     70   0.675    269   0.725  0.938  0.9167  0.9385  0.7684  0.7838
+  0.0569    219   0.826     73   0.780    292   0.814  0.991  0.9159  0.9455  0.6694  0.7672
+  0.0693    246   0.813     72   0.730    318   0.794  1.023  0.9640  0.9254  0.8533  0.6981
+  0.0818    263   0.765     70   0.567    333   0.723  0.971  0.9333  0.9053  0.8090  0.6316
+  0.0943    294   0.646     78   0.579    372   0.632  0.907  0.8316  0.8905  0.4955  0.6192
+  0.1067    317   0.556     71   0.466    388   0.540  0.821  0.8198  0.8616  0.4485  0.5193
+  0.1192    329   0.448     72   0.387    401   0.437  0.731  0.8749  0.8428  0.5353  0.4919
+  0.1316    352   0.415     75   0.274    427   0.390  0.696  0.8051  0.8393  0.3088  0.4902
+  0.1441    365   0.427     68   0.380    433   0.420  0.705  0.8891  0.8523  0.7255  0.4999
+  0.1566    385   0.442     71   0.421    456   0.439  0.725  0.8287  0.8561  0.2832  0.5083
+  0.1690    396   0.506     75   0.359    471   0.483  0.769  0.8146  0.8509  0.0883  0.4746
+  0.1815    406   0.579     64   0.422    470   0.557  0.807  0.9182  0.8548  0.7200  0.4461
+  0.1939    440   0.627     73   0.468    513   0.605  0.825  0.8830  0.8601  0.5878  0.4292
+  0.2064    434   0.613     68   0.497    502   0.597  0.841  0.8813  0.8459  0.5012  0.4342
+  0.2189    476   0.642     75   0.561    551   0.631  0.848  0.8554  0.8514  0.5731  0.4099
+  0.2313    475   0.640     67   0.568    542   0.632  0.853  0.8121  0.8695  0.3350  0.4719
+  0.2438    485   0.639     72   0.488    557   0.619  0.857  0.8747  0.8680  0.4471  0.5072
+ $$
+Resolution limits                    =     35.148     2.000
+Number of used reflections           =       7833
+Percentage observed                  =    99.0018
+Percentage of free reflections       =     4.8469
+Overall R factor                     =     0.4018
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8709
+AverageFree Fourier shell correlation=     0.8660
+Overall weighted R factor            =     0.4493
+Free weighted R factor               =     0.4533
+Overall weighted R2 factor           =     0.5457
+Free weighted R2 factor              =     0.5419
+Average correlation coefficient      =     0.5334
+Overall correlation coefficient      =     0.7093
+Free correlation coefficient         =     0.6706
+Cruickshanks DPI for coordinate error=     0.2929
+DPI based on free R factor           =     0.3059
+Overall figure of merit              =     0.5827
+ML based su of positional parameters =     0.3317
+ML based su of thermal parameters    =    11.5269
+-----------------------------------------------------------------------------
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.72     0.48    -0.03    -0.00    -0.13
+
+----------------------------------------------------------
+  Rigid body parameters will be applied to coordinates
+  as following
+
+ Xnew = Rot*Xold - Rot*Tg + Tg +deltaTg
+Where
+ Xnew and Xold are new and old coordinates of atoms in
+              this domain
+ Rot           is rotation matrix derived from Euler angles
+ Tg            is centre of mass of this domain
+ deltaTg       is shift of centre of mass
+----------------------------------------------------------
+Domain     1
+Centre of mass:    -20.381     0.664    -0.435
+ Euler angles and deltaTg:         0.15     0.35     0.17    -0.03    -0.00    -0.13
+
+ Matrix and deltaTg
+        1.000    -0.006     0.006
+        0.006     1.000     0.000
+       -0.006     0.000     1.000
+       -0.026    -0.002    -0.128
+
+   Polar angles: PHI, PSI(or Omega), CHI(or Kappa), deltaTg:     89.99    47.72     0.48    -0.03    -0.00    -0.13
+
+ labout  FC=FC FWT=FWT PHIC=PHIC PHWT=PHWT DELFWT=DELFWT PHDELWT=PHDELWT FOM=FOM
+           1           1           0   1.80067420E-02   2.83511598E-02  0.500062048    
+           2           0           0   2.54653804E-02   2.83511598E-02  0.500062048    
+
+ WRITTEN OUTPUT MTZ FILE 
+ Logical Name: HKLOUT   Filename: /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A_refmac1.mtz 
+
+-----------------------------------------------------------------------------
+Overall scale should be multiplied by       1.0000
+Overall               : scale =     0.8570, B  =   -8.4529
+Partial structure    1: scale =     0.3672, B  =   16.7025
+Overall anisotropic scale factors
+   B11 =   0.08 B22 =   0.08 B33 =  -0.15 B12 =  -0.00 B13 =  -0.00 B23 =  -0.00
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+
+    ****                Things for loggraph, R factor and others                ****
+
+$TABLE: Cycle   21. Rfactor analysis, F distribution v resln  :
+$GRAPHS:Cycle   21.  v. resln :N:1,6,7,11,12:
+:Cycle   21.  and  v. resln :N:1,4,5,9,10:
+:Cycle   21. % observed v. resln :N:1,3:
+$$
+M(4SSQ/LL) NR_used %_obs M(Fo_used) M(Fc_used) Rf_used WR_used
+NR_free M(Fo_free) M(Fc_free) Rf_free   WR_free $$
+$$
+ 0.007     119 100.00   429.2   405.7  0.28  0.45      11   354.4   292.6  0.63  0.70
+ 0.019     182 100.00   343.5   345.2  0.32  0.41       8   395.4   480.2  0.32  0.45
+ 0.032     237 100.00   327.1   341.4  0.40  0.49       6   399.9   451.7  0.19  0.23
+ 0.044     269  99.64   414.4   406.9  0.32  0.40       9   454.0   424.5  0.36  0.44
+ 0.057     292  99.68   496.8   449.2  0.29  0.35      16   434.6   371.7  0.39  0.40
+ 0.069     318  99.70   456.4   378.7  0.36  0.41      17   531.9   401.1  0.28  0.32
+ 0.082     333  99.43   424.3   344.3  0.38  0.42      16   422.1   366.3  0.27  0.31
+ 0.094     372 100.00   393.5   309.1  0.40  0.43      17   390.2   280.0  0.54  0.62
+ 0.107     388  99.02   335.4   284.9  0.43  0.49      18   290.5   341.7  0.57  0.72
+ 0.119     401  99.07   284.0   249.7  0.43  0.47      26   341.8   266.1  0.44  0.45
+ 0.132     427 100.00   260.5   223.2  0.46  0.51      20   288.4   217.7  0.45  0.46
+ 0.144     433  98.48   250.1   216.0  0.42  0.45      21   252.8   188.0  0.38  0.41
+ 0.157     456  99.16   231.0   208.1  0.42  0.45      18   254.1   193.1  0.42  0.37
+ 0.169     471  98.82   219.6   193.7  0.44  0.47      32   250.7   190.6  0.49  0.50
+ 0.181     470  97.45   213.2   185.3  0.44  0.46      26   230.3   172.1  0.35  0.32
+ 0.194     513  99.82   211.6   182.1  0.43  0.45      28   169.3   148.1  0.40  0.45
+ 0.206     502  97.04   192.4   158.7  0.45  0.46      22   179.5   158.4  0.45  0.50
+ 0.219     551 100.00   190.4   163.5  0.46  0.48      36   186.1   147.6  0.47  0.47
+ 0.231     542  97.41   177.6   150.1  0.43  0.44      22   167.4   137.0  0.55  0.57
+ 0.244     555  98.98   162.9   141.3  0.44  0.44      29   159.4   150.4  0.41  0.38
+$$
+
+    ****                      Fom and SigmaA vs resolution                      ****
+
+ $TABLE: Cycle   21. FSC and  Fom(-acentric, centric, overall v resln:
+ $GRAPHS:Cycle   21. M(Fom) v. resln :N:1,3,5,7,8,9,10,11,12:
+ $$
+ &lt;4SSQ/LL&gt; NREFa  FOMa  NREFc FOMc NREFall FOMall  SigmaA_Fc1 FSCfree  FSCwork CorrFoFcFree CorrFoFcWork$$
+ $$
+  0.0070     51   0.720     68   0.505    119   0.597  0.841  0.6900  0.9094  0.0741  0.8653
+  0.0195    115   0.639     67   0.570    182   0.614  0.877  0.9552  0.9161  0.7336  0.7954
+  0.0320    157   0.671     80   0.593    237   0.645  0.904  0.9676  0.8830  0.8685  0.5960
+  0.0444    199   0.742     70   0.675    269   0.725  0.938  0.9167  0.9385  0.7684  0.7838
+  0.0569    219   0.826     73   0.780    292   0.814  0.991  0.9159  0.9455  0.6694  0.7672
+  0.0693    246   0.813     72   0.730    318   0.794  1.023  0.9640  0.9254  0.8533  0.6981
+  0.0818    263   0.765     70   0.567    333   0.723  0.971  0.9333  0.9053  0.8090  0.6316
+  0.0943    294   0.646     78   0.579    372   0.632  0.907  0.8316  0.8905  0.4955  0.6192
+  0.1067    317   0.556     71   0.466    388   0.540  0.821  0.8198  0.8616  0.4485  0.5193
+  0.1192    329   0.448     72   0.387    401   0.437  0.731  0.8749  0.8428  0.5353  0.4918
+  0.1316    352   0.415     75   0.274    427   0.390  0.696  0.8051  0.8393  0.3088  0.4902
+  0.1441    365   0.427     68   0.380    433   0.420  0.705  0.8891  0.8523  0.7255  0.4999
+  0.1566    385   0.442     71   0.421    456   0.439  0.725  0.8287  0.8561  0.2832  0.5083
+  0.1690    396   0.506     75   0.359    471   0.483  0.769  0.8146  0.8509  0.0883  0.4746
+  0.1815    406   0.579     64   0.422    470   0.557  0.807  0.9182  0.8548  0.7200  0.4461
+  0.1939    440   0.627     73   0.468    513   0.605  0.825  0.8830  0.8601  0.5878  0.4292
+  0.2064    434   0.613     68   0.497    502   0.597  0.841  0.8813  0.8459  0.5012  0.4343
+  0.2189    476   0.642     75   0.561    551   0.631  0.848  0.8554  0.8514  0.5731  0.4099
+  0.2313    475   0.640     67   0.568    542   0.632  0.853  0.8121  0.8695  0.3351  0.4719
+  0.2438    485   0.639     72   0.488    557   0.619  0.857  0.8747  0.8680  0.4470  0.5072
+ $$
+Resolution limits                    =     35.148     2.000
+Number of used reflections           =       7833
+Percentage observed                  =    99.0018
+Percentage of free reflections       =     4.8469
+Overall R factor                     =     0.4017
+Free R factor                        =     0.4196
+Average Fourier shell correlation    =     0.8709
+AverageFree Fourier shell correlation=     0.8660
+Overall weighted R factor            =     0.4493
+Free weighted R factor               =     0.4533
+Overall weighted R2 factor           =     0.5457
+Free weighted R2 factor              =     0.5419
+Average correlation coefficient      =     0.5334
+Overall correlation coefficient      =     0.7093
+Free correlation coefficient         =     0.6706
+Cruickshanks DPI for coordinate error=     0.2929
+DPI based on free R factor           =     0.3059
+Overall figure of merit              =     0.5827
+ML based su of positional parameters =     0.0001
+ML based su of thermal parameters    =     0.0033
+-----------------------------------------------------------------------------
+  Time in seconds: CPU =         6.67
+             Elapsed =           0.00
+
+    ****           Things for loggraph, R factor and others vs cycle            ****
+
+$TABLE: Rfactor analysis, stats vs cycle  :
+$GRAPHS: vs cycle :N:1,2,3:
+:FOM vs cycle :N:1,4:
+:-LL vs cycle :N:1,5:
+:-LLfree vs cycle :N:1,6:
+:Geometry vs cycle:N:1,7,8,9,10,11:
+$$
+    Ncyc    Rfact    Rfree     FOM      -LL     -LLfree  rmsBOND  zBOND rmsANGL  zANGL rmsCHIRAL $$
+$$
+       0   0.4103   0.4282   0.588       48242.    2454   0.0      0.0    0.0     0.0      0.0
+       1   0.4047   0.4234   0.581       48226.    2454   0.0      0.0    0.0     0.0      0.0
+       2   0.4026   0.4214   0.582       48198.    2454   0.0      0.0    0.0     0.0      0.0
+       3   0.4021   0.4204   0.582       48198.    2454   0.0      0.0    0.0     0.0      0.0
+       4   0.4019   0.4199   0.582       48198.    2454   0.0      0.0    0.0     0.0      0.0
+       5   0.4017   0.4197   0.583       48185.    2453   0.0      0.0    0.0     0.0      0.0
+       6   0.4017   0.4195   0.583       48188.    2453   0.0      0.0    0.0     0.0      0.0
+       7   0.4017   0.4195   0.583       48194.    2453   0.0      0.0    0.0     0.0      0.0
+       8   0.4017   0.4195   0.583       48194.    2453   0.0      0.0    0.0     0.0      0.0
+       9   0.4017   0.4196   0.583       48195.    2453   0.0      0.0    0.0     0.0      0.0
+      10   0.4017   0.4196   0.583       48195.    2453   0.0      0.0    0.0     0.0      0.0
+      11   0.4017   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      12   0.4017   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      13   0.4017   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      14   0.4017   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      15   0.4017   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      16   0.4017   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      17   0.4017   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      18   0.4018   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      19   0.4018   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+      20   0.4017   0.4196   0.583       48193.    2453   0.0      0.0    0.0     0.0      0.0
+ $$
+ $TEXT:Result: $$ Final results $$
+                      Initial    Final
+           R factor    0.4103   0.4017
+             R free    0.4282   0.4196
+ $$
+</pre>
+  <!-- Add a control in the non-summary to flip back
+     to the summary only -->
+  <div class="REFMAC5_0_inner_control inner_control">
+     <a href="javascript://" onclick="show_only_summary('REFMAC5_0')">[Show summary only]</a>
+  </div>
+</div>
+
+<div class="summary"><pre> Refmac:  End of Refmac_5.8.0403   
+Times: User:       6.9s System:    0.1s Elapsed:     0:07  
+
+</pre></div>
+
+
+</div>
+
+<!-- Tail-end visibility controls for REFMAC5_0 -->
+
+<div class="REFMAC5_0_logfile_closed_controls">
+   <!-- Controls available when logfile is completely hidden -->
+   <p>
+   <a href="javascript://"
+      onclick="open_summary_logfile('REFMAC5_0')">[Show logfile summary]</a>
+   <a href="javascript://"
+      onclick="open_full_logfile('REFMAC5_0')">[Show full logfile]</a>
+   </p>
+</div>
+
+    <div class="REFMAC5_0_logfile_open_controls" style="display: none">
+   <!-- Controls available if some or all the logfile is visible -->
+   <div class="REFMAC5_0_show_full_logfile_control" style="display: none">
+      <p>Current view: summary only
+      <a href="javascript://"
+         onclick="show_full_logfile('REFMAC5_0')">[Show full logfile]</a>
+      <a href="javascript://"
+         onclick="close_logfile('REFMAC5_0')">[Hide logfile]</a>
+     </p>
+   </div>
+   <div class="REFMAC5_0_show_summary_control">
+      <p>Current view: full logfile
+      <a href="javascript://"
+         onclick="show_only_summary('REFMAC5_0')">[Show logfile summary]</a>
+      <a href="javascript://"
+         onclick="close_logfile('REFMAC5_0')">[Hide logfile]</a>
+      </p>
+   </div>
+</div>
+
+</div>
+<!-- End of REFMAC5_0 logfile -->
+
+<p><span class="ccp4i">CCP4i:</span> <em>Writing final coordinates (XYZOUT) to /home/noguhiro2007/project/lysozyme/ccp4/lysozyme_ce6c6_unrelaxed_rank_5_model_1_molrep2_refmac1.pdb</em></p>
+<p><span class="ccp4i">CCP4i:</span> <em>Writing final phases (HKLOUT) to /home/noguhiro2007/project/lysozyme/ccp4/XDS_ASCII_scaled1_p43212_1.3A_refmac1.mtz</em></p>
+<hr />
+<p><em>Generated for you by baubles 0.0.8 on Sat Dec 31 01:48:03 2022</em></p>
+</body>
+</html>
